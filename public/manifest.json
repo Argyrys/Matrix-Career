@@ -1,0 +1,22 @@
+{
+  "name": "Matrix Careers | 3D Finance & Career Content Hub",
+  "short_name": "Matrix Careers",
+  "description": "A 3D interactive finance & career content hub for developers worldwide. Freelancing, MCA placements, personal finance, and remote work blueprints.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "finance", "career", "technology"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
