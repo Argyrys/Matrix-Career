@@ -9,6 +9,7 @@ import BookmarkButton from './BookmarkButton'
 import SocialShare from './SocialShare'
 import ReadingProgress from './ReadingProgress'
 import EmailCapture from './EmailCapture'
+import CookieConsent from './CookieConsent'
 
 function parseContent(content) {
   return content
