@@ -70,12 +70,6 @@ export default function HubScene({ articles, filter, selectedId, autoRotate, onA
         {/* Guaranteed-visible starfield backdrop */}
         <Starfield />
 
-        {/* Central reference sphere — always visible, proves camera is working */}
-        <mesh position={[0, 0, 0]}>
-          <sphereGeometry args={[3, 32, 32]} />
-          <meshBasicMaterial color="#10b981" />
-        </mesh>
-
         <OrbitControls
           enablePan={false}
           enableZoom
