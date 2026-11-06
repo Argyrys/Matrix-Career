@@ -4,38 +4,35 @@ import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import ArticleNode from './ArticleNode'
 
-// Custom starfield — big bright points, never culled, no drei dependency
+// Guaranteed-visible starfield using raw THREE.Points
 function Starfield() {
   const pointsRef = useRef()
 
   useFrame(() => {
-    try {
-      const points = pointsRef.current
-      if (!points) return
-      points.rotation.y += 0.0002
-      points.rotation.x += 0.0001
-    } catch {
-      // swallow render errors
-    }
+    const points = pointsRef.current
+    if (!points) return
+    points.rotation.y += 0.0001
+    points.rotation.x += 0.00005
   })
 
-  const count = 12000
+  const count = 6000
   const positions = new Float32Array(count * 3)
   const colors = new Float32Array(count * 3)
   const sizes = new Float32Array(count)
   for (let i = 0; i < count; i++) {
+    // Spherical distribution around camera
     const u = Math.random()
     const v = Math.random()
     const theta = 2 * Math.PI * u
     const phi = Math.acos(2 * v - 1)
-    const r = 150 + Math.random() * 40
+    const r = 120 + Math.random() * 40
     positions[i * 3] = r * Math.sin(phi) * Math.cos(theta)
     positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
     positions[i * 3 + 2] = r * Math.cos(phi)
-    colors[i * 3] = 0.6
-    colors[i * 3 + 1] = 0.8
-    colors[i * 3 + 2] = 1
-    sizes[i] = 0.6 + Math.random() * 1.5
+    colors[i * 3] = 0.4
+    colors[i * 3 + 1] = 0.6
+    colors[i * 3 + 2] = 1.0
+    sizes[i] = 0.4 + Math.random() * 1.0
   }
 
   const geometry = new THREE.BufferGeometry()
@@ -43,13 +40,12 @@ function Starfield() {
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
   geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1))
   const material = new THREE.PointsMaterial({
-    size: 0.6,
+    size: 0.5,
     vertexColors: true,
     transparent: true,
-    opacity: 0.9,
+    opacity: 0.8,
     sizeAttenuation: false,
     depthWrite: false,
-    blending: THREE.AdditiveBlending,
   })
   return <points ref={pointsRef} geometry={geometry} material={material} frustumCulled={false} />
 }
@@ -60,23 +56,33 @@ export default function HubScene({ articles, filter, selectedId, autoRotate, onA
   return (
     <div className="absolute inset-0 w-full h-full z-0" style={{ touchAction: 'none' }}>
       <Canvas
-        camera={{ position: [0, 2, 10], fov: 45, near: 0.1, far: 1000 }}
+        camera={{ position: [0, 2, 12], fov: 45, near: 0.1, far: 500 }}
         gl={{ antialias: true, alpha: false }}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block', background: '#020617' }}
       >
-        <ambientLight intensity={0.55} color="#ffe8c7" />
-        <pointLight intensity={2.5} color="#4f46e5" position={[6, 8, 5]} />
-        <directionalLight intensity={1.8} color="#10b981" position={[-7, 9, -5]} castShadow />
+        {/* Warm ambient light */}
+        <ambientLight intensity={0.4} color="#ffffff" />
 
+        {/* Bright point lights for metallic highlights */}
+        <pointLight intensity={2.0} color="#6366f1" position={[8, 8, 6]} />
+        <pointLight intensity={2.0} color="#10b981" position={[-8, 8, -6]} />
+
+        {/* Guaranteed-visible starfield backdrop */}
         <Starfield />
+
+        {/* Central reference sphere — always visible, proves camera is working */}
+        <mesh position={[0, 0, 0]}>
+          <sphereGeometry args={[3, 32, 32]} />
+          <meshBasicMaterial color="#10b981" />
+        </mesh>
 
         <OrbitControls
           enablePan={false}
           enableZoom
           minDistance={4}
-          maxDistance={12}
+          maxDistance={50}
           autoRotate={autoRotate && !isOrbiting}
-          autoRotateSpeed={0.4}
+          autoRotateSpeed={0.5}
           enableDamping
           dampingFactor={0.06}
           onStart={() => setIsOrbiting(true)}

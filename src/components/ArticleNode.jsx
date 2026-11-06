@@ -29,15 +29,16 @@ function mulberry32(seed) {
   }
 }
 
+// Well-spaced constellation positions — no overlap, cinematic flight
 const CONSTELLATION_POSITIONS = [
-  [-3.5, 1.0, -1.0],
-  [-1.5, -1.5, -2.5],
-  [2.0, 1.5, 2.0],
-  [4.0, -1.0, 0.5],
-  [-4.5, -2.0, 1.5],
-  [1.5, -3.0, -3.0],
-  [-2.0, 3.5, -4.0],
-  [4.5, 2.5, -1.5],
+  [-6, 2, -4],    // node 1
+  [-3, -3, -6],   // node 2
+  [4, 2, 4],      // node 3
+  [7, -1, 1],     // node 4
+  [-7, -4, 3],    // node 5
+  [3, -5, -5],    // node 6
+  [-4, 6, -7],    // node 7
+  [8, 5, -3],     // node 8
 ]
 
 export default function ArticleNode({ article, selected, visible, onSelect, setCanvasCursor, index }) {
@@ -47,50 +48,48 @@ export default function ArticleNode({ article, selected, visible, onSelect, setC
   const float = useRef(0)
 
   const color = selected ? SELECTED_HEX : CATEGORY_HEX[article.category] ?? CATEGORY_HEX.default
-  const position = CONSTELLATION_POSITIONS[index] ?? [-2 + (index * 1.7), 0, -3 - (index * 0.8)]
+  const position = CONSTELLATION_POSITIONS[index] ?? [-2 + (index * 2), 0, -4 - (index * 0.5)]
 
   useFrame((state) => {
-    try {
-      const mesh = meshRef.current
-      const ring = ringRef.current
-      if (!mesh) return
+    const mesh = meshRef.current
+    const ring = ringRef.current
+    if (!mesh) return
 
-      float.current += state.delta * (selected ? 2.5 : 1.0)
-      const lift = Math.sin(float.current) * (selected ? 0.5 : 0.25)
-      const drift = Math.cos(float.current * 0.5) * 0.05
+    // Subtle floating animation around group position
+    float.current += state.delta * (selected ? 2.0 : 1.0)
+    const lift = Math.sin(float.current) * (selected ? 0.4 : 0.2)
+    const drift = Math.cos(float.current * 0.4) * 0.05
 
-      mesh.position.set(drift, lift, 0)
-      mesh.rotation.x += state.delta * 0.04
-      mesh.rotation.y += state.delta * 0.07
+    mesh.position.set(drift, lift, 0)
+    mesh.rotation.x += state.delta * 0.03
+    mesh.rotation.y += state.delta * 0.05
 
-      if (ring) {
-        ring.position.set(0, -0.1 + lift, 0)
-        ring.rotation.z += state.delta * 0.025
-      }
-
-      const targetScale = !visible ? 0 : selected ? 1.7 : hovered ? 1.3 : 1
-      const s = mesh.scale
-      const next = s.x + (targetScale - s.x) * 0.15
-      s.set(next, next, next)
-
-      const material = mesh.material
-      if (hovered) {
-        material.color.setHex(color)
-        material.opacity = 0.98
-        material.transparent = true
-      } else if (selected) {
-        material.color.setHex(SELECTED_HEX)
-        material.opacity = 0.98
-        material.transparent = true
-      } else {
-        material.color.setHex(color)
-        material.opacity = 1
-        material.transparent = false
-      }
-      material.needsUpdate = true
-    } catch {
-      // swallow render errors
+    if (ring) {
+      ring.position.set(0, -0.1 + lift, 0)
+      ring.rotation.z += state.delta * 0.02
     }
+
+    // Smooth scale transitions
+    const targetScale = !visible ? 0 : selected ? 1.6 : hovered ? 1.2 : 1
+    const s = mesh.scale
+    const next = s.x + (targetScale - s.x) * 0.15
+    s.set(next, next, next)
+
+    const material = mesh.material
+    if (hovered) {
+      material.color.setHex(color)
+      material.opacity = 0.95
+      material.transparent = true
+    } else if (selected) {
+      material.color.setHex(SELECTED_HEX)
+      material.opacity = 0.95
+      material.transparent = true
+    } else {
+      material.color.setHex(color)
+      material.opacity = 1
+      material.transparent = false
+    }
+    material.needsUpdate = true
   })
 
   return (
@@ -101,12 +100,12 @@ export default function ArticleNode({ article, selected, visible, onSelect, setC
         onPointerOut={() => { setHovered(false); setCanvasCursor('default') }}
         onClick={() => onSelect(article)}
       >
-        <icosahedronGeometry args={[2.6, 1]} />
+        <icosahedronGeometry args={[3, 1]} />
         <meshBasicMaterial color={color} />
       </mesh>
       <mesh ref={ringRef} frustumCulled={false}>
-        <torusKnotGeometry args={[3.4, 1.0, 100, 20]} />
-        <meshBasicMaterial color={color} transparent opacity={0.6} />
+        <torusKnotGeometry args={[4.2, 1.4, 100, 20]} />
+        <meshBasicMaterial color={color} transparent opacity={0.5} />
       </mesh>
     </group>
   )
