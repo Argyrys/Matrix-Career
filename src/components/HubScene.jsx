@@ -1,8 +1,11 @@
 import { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { Canvas, useFrame, extend } from '@react-three/fiber'
+import { Stars, Text, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import ArticleNode from './ArticleNode'
+
+// Extend drei components into the THREE namespace for R3F
+extend({ Stars, Text })
 
 // Guaranteed-visible starfield using raw THREE.Points
 function Starfield() {
