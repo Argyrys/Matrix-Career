@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { Text } from '@react-three/drei'
 
 const CATEGORY_HEX = {
   Freelancing: 0x6366f1,
@@ -44,14 +45,18 @@ const CONSTELLATION_POSITIONS = [
 export default function ArticleNode({ article, selected, visible, onSelect, setCanvasCursor, index }) {
   const meshRef = useRef()
   const ringRef = useRef()
+  const textRef = useRef()
   const [hovered, setHovered] = useState(false)
   const float = useRef(0)
 
   const color = selected ? SELECTED_HEX : CATEGORY_HEX[article.category] ?? CATEGORY_HEX.default
   const position = CONSTELLATION_POSITIONS[index] ?? [-2 + (index * 2), 0, -4 - (index * 0.5)]
 
+  const shortTitle = article.title.length > 26 ? article.title.slice(0, 23) + '…' : article.title
+
   useFrame((state) => {
     const mesh = meshRef.current
+    const text = textRef.current
     const ring = ringRef.current
     if (!mesh) return
 
@@ -64,6 +69,9 @@ export default function ArticleNode({ article, selected, visible, onSelect, setC
     mesh.rotation.x += state.delta * 0.03
     mesh.rotation.y += state.delta * 0.05
 
+    if (text) {
+      text.position.set(0, 3.5 + lift, 0)
+    }
     if (ring) {
       ring.position.set(0, -0.1 + lift, 0)
       ring.rotation.z += state.delta * 0.02
@@ -107,6 +115,10 @@ export default function ArticleNode({ article, selected, visible, onSelect, setC
         <torusKnotGeometry args={[4.2, 1.4, 100, 20]} />
         <meshBasicMaterial color={color} transparent opacity={0.5} />
       </mesh>
+      {/* 3D typography label floating above the geometry */}
+      <text ref={textRef} fontSize={1.0} anchor="center" color="#ffffff" frustumCulled={false}>
+        {shortTitle}
+      </text>
     </group>
   )
 }
