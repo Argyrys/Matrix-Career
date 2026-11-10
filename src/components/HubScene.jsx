@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { Canvas, useFrame, extend, useLoader } from '@react-three/fiber'
+import { useRef, useState, useEffect } from 'react'
+import { Canvas, useFrame, extend } from '@react-three/fiber'
 import { Stars, Text, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
@@ -59,7 +59,18 @@ function Starfield() {
 
 export default function HubScene({ articles, filter, selectedId, autoRotate, onArticleSelect, setCanvasCursor }) {
   const [isOrbiting, setIsOrbiting] = useState(false)
-  const font = useLoader(FontLoader, FONT_URL)
+  const [font, setFont] = useState(null)
+
+  // Load font imperatively — errors here never crash the Three.js canvas
+  useEffect(() => {
+    const loader = new FontLoader()
+    loader.load(
+      FONT_URL,
+      (loadedFont) => setFont(loadedFont),
+      undefined,
+      (err) => console.warn('[HubScene] Font load failed, text labels disabled:', err)
+    )
+  }, [])
 
   return (
     <div className="absolute inset-0 w-full h-full z-0" style={{ touchAction: 'none' }}>
