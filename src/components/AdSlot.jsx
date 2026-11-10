@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 
 const VARIANT_CLASSES = {
   horizontal: 'w-full h-24',
@@ -11,8 +11,63 @@ export default function AdSlot({
   className = '',
   slotId = 'ad-slot',
   onClick = () => {},
+  onImpression,
 }) {
   const containerRef = useRef()
+
+  // Viewability signal — fire once when at least half the slot is on screen.
+  // IntersectionObserver is primary; a rect check acts as fallback for engines
+  // where observer callbacks are delayed or unavailable (some webviews).
+  useEffect(() => {
+    if (!onImpression) return undefined
+    const el = containerRef.current
+    if (!el) return undefined
+
+    let done = false
+    const fire = () => {
+      if (done) return
+      done = true
+      onImpression(slotId)
+    }
+    const isVisible = () => {
+      const r = el.getBoundingClientRect()
+      const vh = window.innerHeight || document.documentElement.clientHeight
+      const shown = Math.min(r.bottom, vh) - Math.max(r.top, 0)
+      return shown > 0 && shown >= r.height * 0.5
+    }
+
+    let observer = null
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            fire()
+            observer?.disconnect()
+          }
+        },
+        { threshold: 0.5 }
+      )
+      observer.observe(el)
+    }
+
+    // Fallback: periodically check geometry so impressions are never lost —
+    // covers engines where observer callbacks are delayed, throttled or absent.
+    const fallback = setInterval(() => {
+      if (isVisible()) {
+        fire()
+        observer?.disconnect()
+        clearInterval(fallback)
+      }
+    }, 2000)
+    // Stop polling after a minute; the observer (or a later scroll) still owns it
+    const stopPolling = setTimeout(() => clearInterval(fallback), 60000)
+
+    return () => {
+      clearInterval(fallback)
+      clearTimeout(stopPolling)
+      observer?.disconnect()
+    }
+  }, [onImpression, slotId])
 
   const handleClick = (e) => {
     e.preventDefault()

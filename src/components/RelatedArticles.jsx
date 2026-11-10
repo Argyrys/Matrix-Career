@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BookOpen, Clock, ExternalLink } from 'lucide-react'
 
-export default function RelatedArticles({ articles, currentId, category }) {
+export default function RelatedArticles({ articles, currentId, category, onSelect }) {
   const related = articles.filter((a) => a.id !== currentId && a.category === category).slice(0, 3)
 
   if (related.length === 0) return null
@@ -16,7 +16,20 @@ export default function RelatedArticles({ articles, currentId, category }) {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {related.map((article) => (
-          <article key={article.id} className="group cursor-pointer border border-slate-800/40 rounded-lg p-4 hover:border-indigo-500/50 hover:bg-slate-900/40 transition-all">
+          <article
+            key={article.id}
+            className="group cursor-pointer border border-slate-800/40 rounded-lg p-4 hover:border-indigo-500/50 hover:bg-slate-900/40 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+            onClick={() => onSelect?.(article)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onSelect?.(article)
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={`Read next article: ${article.title}`}
+          >
             <div className="flex items-start gap-3 mb-3">
               <span className="w-8 h-8 rounded bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold shrink-0">
                 MC

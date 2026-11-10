@@ -35,14 +35,21 @@ function parseContent(content) {
     })
 }
 
-export default function SidebarPanel({ article, articles, onClose, onAdClick }) {
+export default function SidebarPanel({ article, articles, onClose, onAdClick, onSelect }) {
   const [mounted, setMounted] = useState(false)
   const scrollRef = useRef(null)
+  const isFirstArticle = useRef(true)
 
   useEffect(() => {
-    setMounted(false)
-    const raf = requestAnimationFrame(() => setMounted(true))
-    return () => cancelAnimationFrame(raf)
+    // Slide in on first open; on in-place switches (related article clicks) stay open and jump to top
+    if (isFirstArticle.current) {
+      isFirstArticle.current = false
+      setMounted(false)
+      const raf = requestAnimationFrame(() => setMounted(true))
+      return () => cancelAnimationFrame(raf)
+    }
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
+    return undefined
   }, [article])
 
   const blocks = parseContent(article.content)
@@ -133,8 +140,8 @@ export default function SidebarPanel({ article, articles, onClose, onAdClick }) 
           {/* Social sharing */}
           <SocialShare article={article} />
 
-          {/* Related articles to maximize dwell time */}
-          <RelatedArticles articles={articles} currentId={article.id} category={article.category} />
+          {/* Related articles to maximize dwell time — clicking switches to the article in-place */}
+          <RelatedArticles articles={articles} currentId={article.id} category={article.category} onSelect={onSelect} />
 
           {/* Client-side coding sandbox (gamified reading experience) */}
           <ErrorBoundary fallback={<div className="p-4 text-sm text-slate-400 bg-slate-900/50 rounded-lg border border-slate-800" role="status">Code sandbox temporarily unavailable</div>}>

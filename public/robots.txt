@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://matrixcareers.example.com/sitemap.xml
+Sitemap: https://matrix-career.vercel.app/sitemap.xml
