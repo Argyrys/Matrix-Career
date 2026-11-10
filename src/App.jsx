@@ -244,31 +244,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* Category Filtering Hub — floating soul green button panel at bottom center */}
-      {!selected && (
-        <div
-          className="fixed bottom-[12vh] left-1/2 -translate-x-1/2 z-40 flex gap-2 bg-slate-950/90 backdrop-blur-md border border-slate-800/40 p-2 rounded-full shadow-2xl"
-          role="radiogroup"
-          aria-label="Article category filter"
-        >
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              role="radio"
-              aria-checked={filter === cat}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
-                filter === cat
-                  ? 'bg-gradient-to-r from-indigo-500 to-emerald-500 text-white shadow-lg shadow-indigo-500/40'
-                  : 'bg-slate-800/60 text-slate-400 border border-slate-700/50 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Dismiss backdrop behind the slide-in panel */}
       {selected && (
         <div
