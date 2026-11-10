@@ -186,4 +186,193 @@ Overlap windows matter more than full-time availability. Block 4 hours of overla
 ### 4. Payments & Compliance
 Receive USD via Wise, Payoneer, or direct SWIFT. File Form 15CA/CB where required, and track inward remittance through your bank's AD code for FEMA compliance.**`,
   },
+  {
+    id: "frontend-performance-optimization-2026",
+    title: "Frontend Performance Optimization: Lighthouse 100 Guide",
+    summary: "Complete guide to achieving perfect Lighthouse scores with code splitting, image optimization, and Core Web Vitals.",
+    category: "Freelancing",
+    readTime: "10 min read",
+    date: "Oct 28, 2026",
+    question: "Implement a Lighthouse Performance Score Calculator",
+    starterCode: `// Lighthouse Performance Score Calculator\n// Calculate performance score based on Core Web Vitals\n\nfunction calculateLighthouseScore(lcp, fid, cls) {\n  // TODO: Calculate score based on LCP, FID, CLS thresholds\n  return 0;\n}\n\n// Test cases\nconsole.log(calculateLighthouseScore(2500, 100, 0.1)); // Expected: 90+`,
+    content: `Performance isn't just a metric—it's a conversion multiplier. A 1-second delay reduces conversions by 20%. Here's how to achieve perfect scores.
+
+### 1. Core Web Vitals Mastery
+- **LCP (Largest Contentful Paint):** Under 2.5s. Optimize hero images, preload critical CSS, use next-gen formats (WebP/AVIF).
+- **FID (First Input Delay):** Under 100ms. Defer non-critical JavaScript, use web workers for heavy computation.
+- **CLS (Cumulative Layout Shift):** Under 0.1. Reserve space for images, use aspect-ratio CSS, avoid dynamic content injection.
+
+### 2. Code Splitting Strategy
+Use dynamic import() for route-based splitting. Implement route-level code splitting with React.lazy() so users only download what they need. Vendor chunks should be separated for better caching.
+
+### 3. Image Optimization Pipeline
+Convert to WebP/AVIF with fallbacks. Implement responsive srcset with appropriate sizes. Lazy-load below-the-fold images with Intersection Observer. Use blur placeholders for perceived performance.
+
+### 4. Caching & CDN Strategy
+Set immutable cache headers for hashed assets. Implement service worker for offline-first experience. Use CDN for static assets with edge caching. Configure proper cache invalidation strategies.
+
+### 5. JavaScript Bundle Analysis
+Use source-map-explorer or webpack-bundle-analyzer. Eliminate unused code with tree shaking. Replace heavy libraries with lighter alternatives (moment.js → date-fns, lodash → lodash-es).**`,
+  },
+  {
+    id: "react-19-features-production",
+    title: "React 19 Features: Server Components & Actions in Production",
+    summary: "Practical guide to React 19 Server Components, Server Actions, useFormStatus, and use() hook for modern apps.",
+    category: "Freelancing",
+    readTime: "9 min read",
+    date: "Oct 27, 2026",
+    question: "Build a Server Action Form Handler",
+    starterCode: `// Server Action Form Handler\n// Handle form submissions with React 19 Server Actions\n\n'use server';\n\nexport async function submitForm(formData) {\n  // TODO: Validate and process form data\n  const name = formData.get('name');\n  const email = formData.get('email');\n  return { success: true, message: 'Form submitted' };\n}\n\n// Test cases\n// Server Actions run on the server, not in browser`,
+    content: `React 19 introduces the biggest paradigm shift since hooks. Server Components and Server Actions eliminate the client-server boundary for developers.
+
+### 1. Server Components Deep Dive
+Server Components run exclusively on the server and ship zero JavaScript to the client. They're perfect for data fetching, database queries, and accessing backend services directly. Use them for static content, heavy libraries, and anything that doesn't need interactivity.
+
+### 2. Server Actions
+Server Actions are async functions that run on the server. Call them from client components as event handlers or form actions. They handle serialization, validation, and optimistic updates automatically. No more API routes for simple mutations.
+
+### 3. useFormStatus & useFormState
+useFormStatus provides pending state during form submission for instant UI feedback. useFormState (now useActionState) manages form state with server-side validation. Together they eliminate boilerplate for form handling.
+
+### 4. The use() Hook
+The use() hook suspends on promises, enabling data fetching directly in components. Combine with Suspense for streaming SSR. Use for lazy loading data dependencies without waterfall requests.
+
+### 5. Migration Strategy
+Start with Server Components for data-heavy pages. Incrementally add Server Actions for mutations. Keep existing client components working—they're still supported. Test with React Developer Tools for Server Components visualization.**`,
+  },
+  {
+    id: "tech-salary-negotiation-india-2026",
+    title: "Tech Salary Negotiation in India: 2026 Market Guide",
+    summary: "Compensation bands, negotiation scripts, equity evaluation, and counter-offer strategies for Indian tech professionals.",
+    category: "Finance",
+    readTime: "7 min read",
+    date: "Oct 25, 2026",
+    question: "Build a Salary Negotiation Calculator",
+    starterCode: `// Salary Negotiation Calculator\n// Evaluate counter-offers and total compensation\n\nfunction evaluateOffer(currentCtc, offerCtc, yearsExperience, skills) {\n  // TODO: Calculate fair market value and negotiation range\n  return { fairValue: 0, range: [0, 0] };\n}\n\n// Test cases\nconsole.log(evaluateOffer(1200000, 1500000, 3, ['React', 'Node']));`,
+    content: `Salary negotiation is a skill that compounds over your career. A successful negotiation can add 20-40% to your compensation.
+
+### 1. Understand Total Compensation (TC)
+TC = Base Salary + Variable Pay + RSU/ESOPs + Bonuses + Benefits. Don't negotiate on base alone—variable pay can be 20-40% of TC at FAANG companies. Understand vesting schedules and cliff periods for equity.
+
+### 2. Market Research
+Use levels.fyi, Glassdoor, and AmbitionBox for compensation data. Research specific company bands (L3-L7 at Google, E3-E6 at Meta). Factor in location tier—Bangalore/Pune vs remote. Consider company stage (startup equity vs public company RSUs).
+
+### 3. Negotiation Scripts
+- **Opening:** "Based on my research and the value I bring, I'm targeting [X] in total compensation."
+- **Counter-offer:** "I appreciate the offer. Considering [specific contributions], would you consider [X]?"
+- **Closing:** "I'm excited about this opportunity. Can we work together to bridge the gap?"
+
+### 4. Counter-Offer Strategy
+Never accept immediately—always ask for 48 hours. Get offers in writing. Evaluate non-salary benefits: remote flexibility, learning budget, conference attendance, additional PTO. Consider the growth trajectory, not just the starting number.
+
+### 5. When to Walk Away
+If they can't meet 80% of your target and there's no clear growth path, walk away. Toxic culture, unclear expectations, or "we're a family" red flags should override any salary bump.**`,
+  },
+  {
+    id: "system-design-interview-guide",
+    title: "System Design Interview: From Zero to Senior Level",
+    summary: "Scalability patterns, database selection, caching strategies, and real-world system design walkthroughs.",
+    category: "Placements",
+    readTime: "12 min read",
+    date: "Oct 22, 2026",
+    question: "Design a URL Shortener System",
+    starterCode: `// URL Shortener System Design\n// Generate short URLs and handle redirects\n\nclass URLShortener {\n  constructor() {\n    this.urlMap = new Map();\n    this.counter = 0;\n  }\n\n  shorten(url) {\n    // TODO: Generate unique short URL\n    return '';\n  }\n\n  resolve(shortUrl) {\n    // TODO: Return original URL\n    return '';\n  }\n}\n\n// Test cases\nconst shortener = new URLShortener();\nconst short = shortener.shorten('https://example.com/very/long/url');\nconsole.log(shortener.resolve(short) === 'https://example.com/very/long/url');`,
+    content: `System design interviews test your ability to architect scalable, reliable systems. Here's a structured approach.
+
+### 1. Requirements Gathering (5 minutes)
+Clarify functional requirements: what does the system do? Non-functional requirements: scale, latency, availability, consistency. Estimate: users, QPS, storage, bandwidth. This shows senior-level thinking.
+
+### 2. High-Level Architecture (10 minutes)
+Start with the big picture: clients, load balancers, application servers, databases, caches. Draw clear boundaries between components. Explain data flow for key use cases. Use standard patterns: CQRS, event sourcing, microservices.
+
+### 3. Database Design (10 minutes)
+Choose SQL vs NoSQL based on consistency needs. Design schema with proper indexing. Explain partitioning strategy (horizontal vs vertical). Discuss replication: master-slave, master-master. Address ACID vs BASE trade-offs.
+
+### 4. Scaling & Optimization (10 minutes)
+Horizontal scaling: stateless services, database sharding. Caching: Redis/Memcached, cache invalidation strategies. Async processing: message queues (Kafka, RabbitMQ). CDN for static content, edge computing for dynamic.
+
+### 5. Reliability & Monitoring (5 minutes)
+Circuit breakers, retry policies, bulkhead patterns. Health checks, auto-scaling, graceful degradation. Monitoring: metrics, logs, distributed tracing. Disaster recovery: backups, multi-region deployment.
+
+### 6. Real-World Walkthroughs
+Practice: URL shortener, Twitter feed, WhatsApp messaging, YouTube video streaming. For each: requirements → architecture → database → scaling → trade-offs. Focus on explaining trade-offs, not "perfect" solutions.**`,
+  },
+  {
+    id: "indie-hacker-saas-mvp-2026",
+    title: "Indie Hacker SaaS MVP: From Idea to First $1K MRR",
+    summary: "Validating SaaS ideas, building MVPs with no-code/low-code, pricing strategies, and reaching first customers.",
+    category: "Freelancing",
+    readTime: "8 min read",
+    date: "Oct 20, 2026",
+    question: "Build a SaaS Metrics Dashboard Calculator",
+    starterCode: `// SaaS Metrics Calculator\n// Calculate MRR, churn, LTV, and CAC\n\nfunction calculateSaaSMetrics(mrr, customers, churnRate, cac) {\n  // TODO: Calculate key SaaS metrics\n  return { mrr, churn: 0, ltv: 0, payback: 0 };\n}\n\n// Test cases\nconsole.log(calculateSaaSMetrics(10000, 100, 0.05, 200));`,
+    content: `Building a profitable SaaS isn't about perfect code—it's about solving a real problem for a specific audience.
+
+### 1. Idea Validation Before Code
+Talk to 50+ potential customers before writing a line of code. Identify painful problems people currently pay to solve. Check competition—existing competitors mean validated market. Validate willingness to pay: can you pre-sell before building?
+
+### 2. MVP Scope Discipline
+Build the smallest possible product that solves ONE core problem well. Resist feature creep—every feature adds maintenance burden. Use no-code/low-code when possible: Bubble, Webflow, Zapier. Ship in weeks, not months. Get to market fast.
+
+### 3. Pricing Strategy
+Start with value-based pricing, not cost-plus. Offer3 tiers: Free (trial), Pro (most popular), Enterprise (custom). Annual billing with discount for cash flow. Anchor high—most customers choose middle tier.
+
+### 4. First100 Customers
+Content marketing: SEO-optimized blog posts solving customer problems. Community engagement: Reddit, Twitter/X, niche forums. Product Hunt launch for initial visibility. Cold outreach: personalized emails to ideal customers. Partnerships: integrations with complementary tools.
+
+### 5. Metrics That Matter
+MRR (Monthly Recurring Revenue): your north star. Churn rate: <5% monthly is healthy. LTV:CAC ratio: should be >3:1. Payback period: <12 months is ideal. NPS: measure customer satisfaction for retention.**`,
+  },
+  {
+    id: "ai-ml-career-transition-2026",
+    title: "Transitioning to AI/ML Engineering: 2026 Roadmap",
+    summary: "From software engineering to ML: prerequisite skills, portfolio projects, interview prep, and landing your first ML role.",
+    category: "Placements",
+    readTime: "9 min read",
+    date: "Oct 18, 2026",
+    question: "Build a ML Model Training Pipeline",
+    starterCode: `// ML Model Training Pipeline\n// Handle data splitting, training, and evaluation\n\nclass MLPipeline {\n  constructor(model, features, target) {\n    this.model = model;\n    this.features = features;\n    this.target = target;\n  }\n\n  train(testSize = 0.2) {\n    // TODO: Split data, train model, return metrics\n    return { accuracy: 0, f1: 0 };\n  }\n\n  predict(input) {\n    // TODO: Make prediction\n    return 0;\n  }\n}\n\n// Test cases\nconst pipeline = new MLPipeline('logistic_regression', ['age', 'income'], 'defaulted');`,
+    content: `AI/ML engineering is the highest-demand tech role in 2026. Here's how to make the transition from software engineering.
+
+### 1. Prerequisite Foundation
+Solid Python programming is non-negotiable. Statistics: distributions, hypothesis testing, regression. Linear algebra: matrices, eigenvalues, SVD. Calculus: gradients, optimization, chain rule. SQL mastery for data extraction.
+
+### 2. Core ML Skills
+Supervised learning: regression, classification, tree-based models. Unsupervised learning: clustering, dimensionality reduction. Deep learning: neural networks, CNNs, RNNs, Transformers. MLOps: model versioning, monitoring, A/B testing.
+
+### 3. Portfolio Projects (Show, Don't Tell)
+End-to-end ML projects with deployed models. Kaggle competitions with top-10% finishes. Open-source ML library contributions. Research papers implemented from scratch. Production-grade ML pipelines with monitoring.
+
+### 4. Interview Preparation
+ML system design: design a recommendation engine, fraud detection system. Coding: LeetCode medium + ML-specific problems (implement gradient descent, k-means). Statistics: explain p-values, confidence intervals, bias-variance tradeoff. Case studies: real business problems with ML solutions.
+
+### 5. Landing Your Role
+Target ML Engineer, Applied Scientist, or Research Engineer roles. Network at ML conferences: NeurIPS, ICML, local meetups. Contribute to open-source ML frameworks: PyTorch, Hugging Face. Blog about your ML projects and learnings. Consider ML Ops or Data Scientist roles as stepping stones.**`,
+  },
+  {
+    id: "crypto-defi-web3-careers-2026",
+    title: "Web3 & DeFi Careers: Opportunities in Blockchain Tech",
+    summary: "Smart contract development, DeFi protocols, DAO governance, and building careers in decentralized technologies.",
+    category: "Remote Work",
+    readTime: "7 min read",
+    date: "Oct 15, 2026",
+    question: "Build a Smart Contract Interaction Helper",
+    starterCode: `// Smart Contract Interaction Helper\n// Handle Web3 transactions and contract calls\n\nclass Web3Helper {\n  constructor(provider, contractAddress, abi) {\n    this.provider = provider;\n    this.contract = new Contract(contractAddress, abi, provider);\n  }\n\n  async callMethod(methodName, args) {\n    // TODO: Call contract method with gas estimation\n    return { success: false, result: null };\n  }\n\n  async estimateGas(methodName, args) {\n    // TODO: Estimate gas for transaction\n    return 0;\n  }\n}\n\n// Test cases\nconst helper = new Web3Helper(provider, '0x...', abi);`,
+    content: `Web3 and DeFi are creating entirely new career categories with compensation often2-3x traditional tech.
+
+### 1. Smart Contract Development
+Solidity is the dominant language for Ethereum/EVM chains. Rust for Solana, Move for Aptos/Sui. Security is paramount—audits can cost $100K+. Learn Foundry, Hardhat, and testing frameworks. Understand gas optimization and proxy patterns.
+
+### 2. DeFi Protocol Development
+AMMs, lending protocols, yield aggregators. Understand impermanent loss, flash loans, oracle design. Risk management: liquidation mechanisms, circuit breakers. Composability: building on top of existing protocols.
+
+### 3. DAO Governance & Operations
+Token-weighted voting, quadratic voting, conviction voting. Treasury management, grant programs, contributor coordination. Tooling: Snapshot, Tally, Guild. Community management and contributor onboarding.
+
+### 4. Compensation & Remote Culture
+Web3 salaries often 1.5-2x traditional tech. Many roles are fully remote with crypto-native teams. Token grants can be significant—understand vesting schedules. Equity upside potential but higher risk than public company RSUs.
+
+### 5. Getting Started
+Contribute to open-source protocols: Uniswap, Aave, Compound. Build side projects: simple DeFi integrations, NFT marketplaces. Attend hackathons: ETHGlobal, Solana hackathons. Network in crypto Twitter, Discord, and Telegram groups.**`,
+  },
 ]

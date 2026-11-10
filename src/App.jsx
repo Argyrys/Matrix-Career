@@ -1,5 +1,4 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import HubScene from './components/HubScene'
 import SidebarPanel from './components/SidebarPanel'
 import EmailCapture from './components/EmailCapture'
 import articles from './data/articles'
@@ -49,6 +48,18 @@ export default function App() {
     return c
   }, [articles])
 
+  // Filtered articles based on selected category
+  const filteredArticles = useMemo(() => {
+    if (filter === 'All') return articles
+    return articles.filter((a) => a.category === filter)
+  }, [filter])
+
+  // Get view count for a specific article
+  const getArticleViews = useCallback((articleId) => {
+    const viewCount = JSON.parse(localStorage.getItem('matrix_article_views') || '{}')
+    return viewCount[articleId] || 0
+  }, [])
+
   const handleArticleSelect = useCallback((article) => {
     setSelected(article)
     setCanvasBodyCursor('default')
@@ -84,7 +95,7 @@ export default function App() {
     if (selected) {
       document.title = `${selected.title} | Matrix Careers`
     } else {
-      document.title = 'Matrix Careers | 3D Finance & Career Content Hub'
+      document.title = 'Matrix Careers | Finance & Career Content Hub'
     }
   }, [selected])
 
@@ -167,8 +178,15 @@ export default function App() {
               Matrix Careers
             </h1>
             <p className="text-2xl md:text-3xl text-slate-400 max-w-2xl">
-              Your interactive 3D Finance & Career Content Hub
+              Your interactive Finance & Career Content Hub
             </p>
+            <div className="flex items-center justify-center gap-6 mt-6 text-sm text-slate-500">
+              <span>{articles.length} articles</span>
+              <span>•</span>
+              <span>{totalViews} total views</span>
+              <span>•</span>
+              <span>~{avgReadTime} min read</span>
+            </div>
           </div>
 
           {/* Primary CTAs — like top careers sites have in first screen */}
@@ -177,7 +195,7 @@ export default function App() {
               href="#main-content"
               className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
               role="button"
-              aria-label="Explore article constellation"
+              aria-label="Explore articles"
               tabIndex={0}
             >
               Explore Articles
@@ -185,26 +203,26 @@ export default function App() {
             <a
               className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
               role="button"
-              aria-label="Open salary calculator"
-              tabIndex={0}
-            >
-              Salary Calculator
-            </a>
-            <a
-              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
-              role="button"
-              aria-label="Open code sandbox"
-              tabIndex={0}
-            >
-              Code Sandbox
-            </a>
-            <a
-              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
-              role="button"
-              aria-label="View category filters"
+              aria-label="Browse categories"
               tabIndex={0}
             >
               Browse Categories
+            </a>
+            <a
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
+              role="button"
+              aria-label="View statistics"
+              tabIndex={0}
+            >
+              View Stats
+            </a>
+            <a
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
+              role="button"
+              aria-label="Latest content"
+              tabIndex={0}
+            >
+              Latest Content
             </a>
           </div>
         </div>
@@ -214,32 +232,84 @@ export default function App() {
       <section id="main-content" className="relative pt-24 pb-12">
         <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-emerald-500/5 to-transparent blur-xl md:h-[400px]"></div>
         <div className="relative flex flex-col items-center justify-center gap-6 md:gap-8">
+          {/* Category Cards with Live Counts */}
           <div className="grid grid-cols-2 gap-4 md:grid-cols-5 w-full max-w-4xl">
-            {/* Soul green feature cards replacing 3D nodes */}
-            {['All', 'Freelancing', 'Placements', 'Finance', 'Remote Work'].map((cat, i) => (
+            {CATEGORIES.map((cat, i) => (
               <div
                 key={cat}
-                className="group flex flex-col items-center justify-center rounded-2xl bg-slate-950/80 backdrop-blur-md border border-slate-700/30 hover:bg-emerald-500/15 transition-all hover:border-emerald-500/30 cursor-pointer p-4 shadow-lg shadow-emerald-500/10"
-                onClick={() => {}}
+                className={`group flex flex-col items-center justify-center rounded-2xl backdrop-blur-md border cursor-pointer p-4 transition-all shadow-lg ${
+                  filter === cat
+                    ? 'bg-emerald-500/15 border-emerald-500/30 shadow-emerald-500/20'
+                    : 'bg-slate-950/80 border-slate-700/30 hover:bg-emerald-500/10 hover:border-emerald-500/30 shadow-emerald-500/10'
+                }`}
+                onClick={() => setFilter(cat)}
                 role="button"
                 aria-label={`View ${cat} articles`}
                 tabIndex={0}
-                onMouseOver={() => {}}
-                onMouseOut={() => {}}
-                onKeyDown={() => {}}
+                onKeyDown={(e) => e.key === 'Enter' && setFilter(cat)}
               >
-                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center mb-3">
-                  <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${filter === cat ? 'bg-emerald-500/30' : 'bg-emerald-500/20'}`}>
+                  <svg className={`w-5 h-5 ${filter === cat ? 'text-emerald-300' : 'text-emerald-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     <line x1="12" y1="19" x2="12" y2="13" />
                     <line x1="12" y1="19" x2="18" y2="19" />
                   </svg>
                 </div>
-                <h3 className="text-center text-xs font-medium text-slate-300 transition-colors">{cat}</h3>
-                <p className="text-xs text-slate-500 mt-0.5">articles</p>
+                <h3 className={`text-center text-xs font-medium transition-colors ${filter === cat ? 'text-emerald-300' : 'text-slate-300'}`}>{cat}</h3>
+                <p className={`text-xs mt-0.5 ${filter === cat ? 'text-emerald-400' : 'text-slate-500'}`}>{counts[cat]} articles</p>
               </div>
             ))}
+          </div>
+
+          {/* Article List Grid */}
+          <div className="w-full max-w-6xl px-4">
+            <h2 className="text-lg font-semibold text-slate-300 mb-6 flex items-center gap-2">
+              <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              {filter === 'All' ? 'All Articles' : `${filter} Articles`} ({filteredArticles.length})
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredArticles.map((article) => (
+                <article
+                  key={article.id}
+                  className="group flex flex-col rounded-2xl bg-slate-950/80 backdrop-blur-md border border-slate-700/30 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all cursor-pointer p-6 shadow-lg shadow-emerald-500/10"
+                  onClick={() => handleArticleSelect(article)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handleArticleSelect(article)}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
+                      {article.category}
+                    </span>
+                    <span className="text-xs text-slate-500">{article.readTime}</span>
+                    <span className="text-xs text-slate-600">•</span>
+                    <span className="text-xs text-slate-500">{getArticleViews(article.id)} views</span>
+                  </div>
+                  <h3 className="text-base font-semibold text-slate-200 group-hover:text-emerald-300 transition-colors mb-2 line-clamp-2">
+                    {article.title}
+                  </h3>
+                  <p className="text-sm text-slate-400 line-clamp-3 flex-1">
+                    {article.summary}
+                  </p>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-800/40">
+                    <span className="text-xs text-slate-500">{article.date}</span>
+                    <span className="text-emerald-400 text-sm font-medium group-hover:text-emerald-300 transition-colors flex items-center gap-1">
+                      Read Article
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </svg>
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
