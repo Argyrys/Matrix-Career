@@ -28,14 +28,38 @@
   ],
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "matrixcareer.info" }],
+      "destination": "https://matrixcareer.in/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "matrixcareer.info" }],
       "destination": "https://matrixcareer.in/:path*",
       "permanent": true
     },
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.matrixcareer.info" }],
+      "destination": "https://matrixcareer.in/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.matrixcareer.info" }],
+      "destination": "https://matrixcareer.in/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.matrixcareer.in" }],
+      "destination": "https://matrixcareer.in/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.matrixcareer.in" }],
       "destination": "https://matrixcareer.in/:path*",
       "permanent": true
     }
