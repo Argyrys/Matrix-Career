@@ -42,7 +42,7 @@ const CONSTELLATION_POSITIONS = [
   [8, 5, -3],     // node 8
 ]
 
-export default function ArticleNode({ article, selected, visible, onSelect, setCanvasCursor, index }) {
+export default function ArticleNode({ article, selected, visible, onSelect, setCanvasCursor, index, font }) {
   const meshRef = useRef()
   const ringRef = useRef()
   const textRef = useRef()
@@ -116,7 +116,7 @@ export default function ArticleNode({ article, selected, visible, onSelect, setC
         <meshBasicMaterial color={color} transparent opacity={0.5} />
       </mesh>
       {/* 3D typography label floating above the geometry */}
-      <text ref={textRef} fontSize={1.0} anchor="center" color="#ffffff" frustumCulled={false}>
+      <text ref={textRef} font={font} fontSize={1.0} anchor="center" color="#ffffff" frustumCulled={false}>
         {shortTitle}
       </text>
     </group>

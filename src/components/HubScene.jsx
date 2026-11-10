@@ -1,11 +1,15 @@
 import { useRef, useState } from 'react'
-import { Canvas, useFrame, extend } from '@react-three/fiber'
+import { Canvas, useFrame, extend, useLoader } from '@react-three/fiber'
 import { Stars, Text, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import ArticleNode from './ArticleNode'
 
 // Extend drei components into the THREE namespace for R3F
 extend({ Stars, Text })
+
+// Load a font for 3D text labels (matches Three.js version in package.json)
+const FONT_URL = 'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/fonts/helvetiker_regular.typeface.json'
 
 // Guaranteed-visible starfield using raw THREE.Points
 function Starfield() {
@@ -43,10 +47,10 @@ function Starfield() {
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
   geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1))
   const material = new THREE.PointsMaterial({
-    size: 0.5,
+    size: 2,
     vertexColors: true,
     transparent: true,
-    opacity: 0.8,
+    opacity: 0.9,
     sizeAttenuation: false,
     depthWrite: false,
   })
@@ -55,6 +59,7 @@ function Starfield() {
 
 export default function HubScene({ articles, filter, selectedId, autoRotate, onArticleSelect, setCanvasCursor }) {
   const [isOrbiting, setIsOrbiting] = useState(false)
+  const font = useLoader(FontLoader, FONT_URL)
 
   return (
     <div className="absolute inset-0 w-full h-full z-0" style={{ touchAction: 'none' }}>
@@ -95,6 +100,7 @@ export default function HubScene({ articles, filter, selectedId, autoRotate, onA
             visible={filter === 'All' || article.category === filter}
             onSelect={onArticleSelect}
             setCanvasCursor={setCanvasCursor}
+            font={font}
           />
         ))}
       </Canvas>
