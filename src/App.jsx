@@ -9,7 +9,9 @@ import articles from './data/articles'
 import { useAnalytics } from './hooks/useAnalytics'
 import AdBlockDetector from './components/AdBlockDetector'
 
-const SITE_URL = 'https://matrix-career.vercel.app'
+// Derived at runtime so canonical/OG/JSON-LD are correct on any host
+// (Vercel preview, production domain, Netlify, localhost) — never hardcode.
+const SITE_URL = typeof window !== 'undefined' ? window.location.origin : ''
 
 const HOME_META = {
   title: 'Matrix Careers | Finance & Career Content Hub',

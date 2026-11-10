@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://matrix-career.vercel.app/sitemap.xml
+Sitemap: https://matrixcareerv20-ncrkfd1mf-rs9876555-6549s-projects.vercel.app/sitemap.xml
