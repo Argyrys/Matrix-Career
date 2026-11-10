@@ -1,21 +1,28 @@
 import { useState, useEffect, useRef } from 'react'
 
-export default function ReadingProgress() {
+export default function ReadingProgress({ scrollContainerRef }) {
   const [progress, setProgress] = useState(0)
   const containerRef = useRef(null)
 
+  const getScrollContainer = () => scrollContainerRef?.current || containerRef.current
+
   useEffect(() => {
     const handleScroll = () => {
-      if (!containerRef.current) return
-      const { scrollTop, scrollHeight, clientHeight } = containerRef.current
-      const scrolled = scrollTop / (scrollHeight - clientHeight)
+      const el = getScrollContainer()
+      if (!el) return
+      const { scrollTop, scrollHeight, clientHeight } = el
+      const maxScroll = scrollHeight - clientHeight
+      const scrolled = maxScroll > 0 ? scrollTop / maxScroll : 0
       setProgress(Math.min(Math.max(scrolled, 0), 1))
     }
 
-    const el = containerRef.current
-    el.addEventListener('scroll', handleScroll, { passive: true })
-    return () => el.removeEventListener('scroll', handleScroll)
-  }, [])
+    const el = getScrollContainer()
+    if (el) {
+      el.addEventListener('scroll', handleScroll, { passive: true })
+      handleScroll()
+    }
+    return () => el?.removeEventListener('scroll', handleScroll)
+  }, [scrollContainerRef])
 
   return (
     <div ref={containerRef} className="relative">

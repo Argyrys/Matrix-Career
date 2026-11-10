@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import AdSlot from './AdSlot'
 import CodeSandbox from './CodeSandbox'
@@ -8,7 +8,6 @@ import RelatedArticles from './RelatedArticles'
 import BookmarkButton from './BookmarkButton'
 import SocialShare from './SocialShare'
 import ReadingProgress from './ReadingProgress'
-import EmailCapture from './EmailCapture'
 import CookieConsent from './CookieConsent'
 
 function parseContent(content) {
@@ -38,7 +37,7 @@ function parseContent(content) {
 
 export default function SidebarPanel({ article, articles, onClose, onAdClick }) {
   const [mounted, setMounted] = useState(false)
-  const [showEmail, setShowEmail] = useState(false)
+  const scrollRef = useRef(null)
 
   useEffect(() => {
     setMounted(false)
@@ -56,8 +55,6 @@ export default function SidebarPanel({ article, articles, onClose, onAdClick }) 
 
   return (
     <>
-      {/* Email capture modal (triggered on sidebar open for high-CPM list building) */}
-      {showEmail && <EmailCapture onClose={() => setShowEmail(false)} />}
       <CookieConsent />
 
       <aside
@@ -86,7 +83,7 @@ export default function SidebarPanel({ article, articles, onClose, onAdClick }) 
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 lg:p-8">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 lg:p-8">
           {/* Meta badges */}
           <div className="flex flex-wrap gap-2 mb-6">
             <span className="px-3 py-1 rounded-full border text-xs font-semibold border-indigo-500/30 bg-indigo-500/10 text-indigo-400">
@@ -97,7 +94,7 @@ export default function SidebarPanel({ article, articles, onClose, onAdClick }) 
           </div>
 
           {/* Reading progress bar */}
-          <ReadingProgress />
+          <ReadingProgress scrollContainerRef={scrollRef} />
 
           {/* High-CPM horizontal leaderboard AdSlot right below header */}
           <ErrorBoundary fallback={<div className="h-24 bg-slate-900/40 border border-dashed border-slate-700/50 rounded-xl my-7 flex items-center justify-center text-xs text-slate-500" role="status">Ad placement loading</div>}>

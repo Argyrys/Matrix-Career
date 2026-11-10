@@ -6,7 +6,7 @@ const CATEGORY_HEX = {
   Freelancing: 0x6366f1,
   Placements: 0x3b82f6,
   Finance: 0x22c55e,
-  Remote: 0xa855f7,
+  'Remote Work': 0xa855f7,
   default: 0x64748b,
 }
 

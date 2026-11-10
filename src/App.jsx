@@ -6,7 +6,7 @@ import articles from './data/articles'
 import { useAnalytics } from './hooks/useAnalytics'
 import AdBlockDetector from './components/AdBlockDetector'
 
-const CATEGORIES = ['All', 'Freelancing', 'Placements']
+const CATEGORIES = ['All', 'Freelancing', 'Placements', 'Finance', 'Remote Work']
 
 export default function App() {
   const [selected, setSelected] = useState(null)
