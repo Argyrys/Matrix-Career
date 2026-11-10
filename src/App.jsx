@@ -13,8 +13,33 @@ export default function App() {
   const [filter, setFilter] = useState('All')
   const [cursor, setCursor] = useState('default')
   const [showEmail, setShowEmail] = useState(false)
+  const [showPwaPrompt, setShowPwaPrompt] = useState(false)
 
   const { trackArticleOpen, trackArticleClose, trackAdImpression, trackAdClick } = useAnalytics()
+
+  // Track article views in localStorage for live statistics
+  useEffect(() => {
+    if (selected) {
+      const views = localStorage.getItem('matrix_article_views') || '{}'
+      const viewCount = JSON.parse(views)
+      viewCount[selected.id] = (viewCount[selected.id] || 0) + 1
+      localStorage.setItem('matrix_article_views', JSON.stringify(viewCount))
+    }
+  }, [selected])
+
+  // Count total views across all articles
+  const totalViews = useMemo(() => {
+    const viewCount = JSON.parse(localStorage.getItem('matrix_article_views') || '{}')
+    return Object.values(viewCount).reduce((sum, v) => sum + v, 0)
+  }, [])
+
+  // Average read time calculation from localStorage article durations
+  const totalReadTime = useMemo(() => {
+    const durations = JSON.parse(localStorage.getItem('matrix_read_durations') || '{}')
+    return Object.values(durations).reduce((sum, v) => sum + v, 0)
+  }, [])
+
+  const avgReadTime = totalReadTime > 0 ? Math.round(totalReadTime / totalViews) : 5
 
   const counts = useMemo(() => {
     const c = { All: articles.length, Freelancing: 0, Placements: 0, Finance: 0, 'Remote Work': 0 }
@@ -28,7 +53,7 @@ export default function App() {
     setSelected(article)
     setCanvasBodyCursor('default')
     trackArticleOpen(article.id)
-    // Trigger email capture on first article open for list building
+    // Trigger email capture on first article open for audience building
     if (!localStorage.getItem('matrix_subscribed')) {
       setShowEmail(true)
     }
@@ -63,6 +88,21 @@ export default function App() {
     }
   }, [selected])
 
+  // PWA install prompt — detect if app is launched standalone
+  useEffect(() => {
+    if ((navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) && !showPwaPrompt) {
+      // Already launched as PWA, don't show prompt
+      return
+    }
+    // Show install prompt on first visit if not standalone
+    setShowPwaPrompt(true)
+    // Hide after 30 seconds or if user dismisses
+    const timer = setTimeout(() => {
+      setShowPwaPrompt(false)
+    }, 30000)
+    return () => clearTimeout(timer)
+  }, [showPwaPrompt])
+
   return (
     <div
       className="relative w-full h-[100dvh] bg-slate-950 text-slate-200 selection:bg-soul-200/30 overflow-hidden"
@@ -70,6 +110,22 @@ export default function App() {
     >
       <AdBlockDetector />
 
+      {/* PWA Install Prompt — show once per session on mobile */}
+      {showPwaPrompt && !navigator.standalone && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-slate-950 border border-slate-700 rounded-xl p-6 max-w-md w-full text-center shadow-xl transform transition-all duration-500" style={{ display: 'block' }}>
+          <div className="flex items-center justify-center gap-3">
+            <svg className="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
+            <span className="text-slate-300 text-sm">Add Matrix Careers to your home screen for offline access & faster loading</span>
+          </div>
+          <button className="mt-3 text-emerald-400 hover:text-emerald-300 text-sm font-medium" onClick={() => setShowPwaPrompt(false)}>Dismiss</button>
+        </div>
+      )}
+
+      {/* Skip link for keyboard accessibility */}
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
@@ -102,8 +158,60 @@ export default function App() {
         </div>
       </header>
 
-      {/* Soul green theme feature cards section - replaces 3D constellation */}
-      <section id="main-content" aria-label="Featured article categories" className="relative pt-24 pb-12">
+      {/* Hero Section — first screen clarity with prominent CTAs */}
+      <section id="hero" className="relative pt-24 pb-12">
+        <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-slate-950/90 to-slate-900/90 blur-xl md:h-[400px]"></div>
+        <div className="relative flex flex-col items-center justify-center gap-6 md:gap-8 max-w-5xl px-4">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-100 mb-4">
+              Matrix Careers
+            </h1>
+            <p className="text-2xl md:text-3xl text-slate-400 max-w-2xl">
+              Your interactive 3D Finance & Career Content Hub
+            </p>
+          </div>
+
+          {/* Primary CTAs — like top careers sites have in first screen */}
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 justify-center mt-8">
+            <a
+              href="#main-content"
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
+              role="button"
+              aria-label="Explore article constellation"
+              tabIndex={0}
+            >
+              Explore Articles
+            </a>
+            <a
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
+              role="button"
+              aria-label="Open salary calculator"
+              tabIndex={0}
+            >
+              Salary Calculator
+            </a>
+            <a
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
+              role="button"
+              aria-label="Open code sandbox"
+              tabIndex={0}
+            >
+              Code Sandbox
+            </a>
+            <a
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
+              role="button"
+              aria-label="View category filters"
+              tabIndex={0}
+            >
+              Browse Categories
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content Area */}
+      <section id="main-content" className="relative pt-24 pb-12">
         <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-emerald-500/5 to-transparent blur-xl md:h-[400px]"></div>
         <div className="relative flex flex-col items-center justify-center gap-6 md:gap-8">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-5 w-full max-w-4xl">
@@ -136,7 +244,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Category Filtering Hub — floating 3D-styled button panel at bottom center */}
+      {/* Category Filtering Hub — floating soul green button panel at bottom center */}
       {!selected && (
         <div
           className="fixed bottom-[12vh] left-1/2 -translate-x-1/2 z-40 flex gap-2 bg-slate-950/90 backdrop-blur-md border border-slate-800/40 p-2 rounded-full shadow-2xl"
