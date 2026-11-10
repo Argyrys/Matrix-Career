@@ -1,4 +1,56 @@
-export default [
+const articles = [
+  {
+    id: "stock-market-investing-india-2026",
+    title: "Stock Market Investing for Indian Developers: 2026 Blueprint",
+    summary: "Open a demat account, start SIPs in index funds, and build your first equity portfolio without losing money to noise.",
+    category: "Stocks",
+    readTime: "8 min read",
+    date: "Nov 10, 2026",
+    question: "Build a Portfolio Allocation Calculator",
+    starterCode: `// Portfolio Allocation Calculator\n// Split a lump-sum investment across assets by risk profile\n\nfunction allocate(amount, allocation) {\n  // TODO: allocation = { equity: 0.6, debt: 0.3, gold: 0.1 }\n  // Return exact rupee split, rounding leftovers to the largest bucket\n  return {};\n}\n\n// Test cases\nconsole.log(allocate(100000, { equity: 0.6, debt: 0.3, gold: 0.1 }));\n// Expected: { equity: 60000, debt: 30000, gold: 10000 }`,
+    content: `Your first stock market buy should be a decision you can defend, not a tip you received at 11pm in a Telegram group.
+
+### 1. Start With the Account, Not the Tips
+Open a demat and trading account with any SEBI-registered broker — Zerodha, Groww, Upstox, or Angel One are all fine. Enable two-factor authentication, use a dedicated email address for financial accounts, and never share OTPs. The broker choice matters far less than the habits you build around it.
+
+### 2. Index Funds Before Single Stocks
+Nifty 50 and Nifty Next 50 index funds have outperformed most active large-cap funds over a decade while charging expense ratios near 0.2%. A ₹5,000 monthly SIP started at 25 compounds dramatically further than a ₹50,000 SIP started at 40 — time in the market is the lever, not the amount.
+
+### 3. The Core-Satellite Approach
+Keep 80-90% of your equity capital in index funds or ETFs as the core. Use the remaining 10-20% for concentrated positions you have actually researched — sectors you work in, businesses you understand deeply. Satellite picks should never break the portfolio if they go to zero.
+
+### 4. Time in Market Beats Timing the Market
+Systematic investment plans remove the need to predict bottoms. Historically lump-sum investing beats SIPs roughly two-thirds of the time, but SIPs win emotionally — they keep you invested through crashes instead of waiting for a perfect entry that never comes.
+
+### 5. Taxes That Actually Matter
+Equity held longer than one year attracts long-term capital gains tax at 12.5% above the ₹1.25 lakh annual exemption; shorter holding periods are taxed at 20%. Dividends are added to your slab income. If you want equity exposure alongside Section 80C deductions, ELSS funds serve both goals.`,
+  },
+  {
+    id: "fundamental-analysis-financial-statements",
+    title: "Fundamental Analysis: Reading a Company's Financial Statements",
+    summary: "Balance sheets, income statements, cash flow, and the five ratios that actually matter before you buy.",
+    category: "Stocks",
+    readTime: "9 min read",
+    date: "Nov 09, 2026",
+    question: "Implement a Financial Ratio Analyzer",
+    starterCode: `// Financial Ratio Analyzer\n// Compute key valuation and health ratios from company metrics\n\nfunction analyzeCompany({ marketCap, netProfit, revenue, totalDebt, totalAssets, bookValue, eps, price }) {\n  // TODO: Return pe, profitMargin, debtToAssets, roe, pb\n  return {};\n}\n\n// Test cases\nconsole.log(analyzeCompany({\n  marketCap: 100000, netProfit: 10000, revenue: 50000,\n  totalDebt: 20000, totalAssets: 80000, bookValue: 40000,\n  eps: 20, price: 200\n}));\n// Expected pe: 10, profitMargin: 0.2, debtToAssets: 0.25, roe: 0.25, pb: 5`,
+    content: `Reading financial statements is the closest thing retail investors have to an unfair advantage — most people never open them.
+
+### 1. The Three Statements
+The income statement shows profitability over a period. The balance sheet shows what you own and owe on a single day. The cash flow statement shows actual cash movement — and it is the hardest of the three to disguise, because cash either arrived in the bank or it did not.
+
+### 2. Why Cash Flow Beats Profit
+A company can report profit while bleeding cash: inventory piling up, receivables growing faster than sales, or heavy capital expenditure disguised as growth. Compare operating cash flow against net profit for two to three years. A persistent divergence is one of the strongest early warning signals in equity analysis.
+
+### 3. Five Ratios That Matter
+P/E compares price to earnings, P/B compares price to book value, ROE measures profit against shareholder equity, debt-to-assets reveals leverage, and free cash flow yield shows what the business actually returns. Always compare each ratio against the company's own five-year history and its sector — a low P/E in a declining industry is a value trap, not a bargain.
+
+### 4. Moats and Management
+Durable competitive advantages come from switching costs, network effects, brand pricing power, or structural cost advantages. Read the management discussion in the annual report and check the shareholding pattern: promoter pledging and sudden auditor resignations are hard signals that outweigh any glossy presentation.
+
+### 5. Valuation Without a PhD
+You do not need a discounted cash flow model to start. Use a sanity check: if earnings grow 12% yearly and you pay 25 times earnings, you need around eight years of growth simply to justify today's multiple. A reasonable multiple paired with durable growth creates the margin of safety that protects you from being wrong.`,
+  },
   {
     id: "freelance-web-dev-india-2026",
     title: "How to Start Freelance Web Development in India (Full Blueprint)",
@@ -375,4 +427,87 @@ Web3 salaries often 1.5-2x traditional tech. Many roles are fully remote with cr
 ### 5. Getting Started
 Contribute to open-source protocols: Uniswap, Aave, Compound. Build side projects: simple DeFi integrations, NFT marketplaces. Attend hackathons: ETHGlobal, Solana hackathons. Network in crypto Twitter, Discord, and Telegram groups.**`,
   },
+  {
+    id: "technical-analysis-charts-indian-markets",
+    title: "Technical Analysis for Traders: Charts, Levels & Risk",
+    summary: "Support/resistance, moving averages, RSI, and position sizing rules that keep retail traders alive.",
+    category: "Stocks",
+    readTime: "7 min read",
+    date: "Nov 06, 2026",
+    question: "Build an RSI & Moving Average Signal Generator",
+    starterCode: `// RSI & Moving Average Signal Generator\n// Compute indicators from a price series and emit signals\n\nfunction computeSignals(prices, period = 14) {\n  // TODO: Return { rsi, sma, signal } where signal is 'buy' | 'sell' | 'hold'\n  return { rsi: 0, sma: 0, signal: 'hold' };\n}\n\n// Test cases\nconst prices = [44, 44.34, 44.09, 44.15, 43.61, 44.33, 44.83, 45.1, 45.42];\nconsole.log(computeSignals(prices));`,
+    content: `Technical analysis is not crystal ball reading — it is a framework for defining risk before you enter a trade.
+
+### 1. Support, Resistance & Trend Structure
+Support is where buyers historically step in; resistance is where sellers overwhelm demand. An uptrend is a sequence of higher highs and higher lows. Trade with the structure, not against it, until the structure clearly breaks — a broken support level often becomes future resistance.
+
+### 2. Moving Averages as Dynamic Levels
+The 20-day and 50-day EMAs act as moving support in uptrends; the 200-day EMA separates bull and bear regimes. A golden cross (50 crossing above 200) signals regime change but lags badly — use averages to frame decisions, never as standalone triggers.
+
+### 3. RSI & Momentum Divergence
+RSI above 70 is overbought and below 30 is oversold, but in strong trends RSI can stay pinned for weeks. The more useful signal is divergence: price makes a new high while RSI fails to confirm it — momentum is fading and the probability of reversal increases.
+
+### 4. The One Rule That Saves Accounts: Position Sizing
+Never risk more than 1-2% of total capital on a single trade. If you have ₹5 lakhs, a trade with a ₹10,000 stop-loss distance means you can be wrong 50 times before ruin. Risk math matters more than entry accuracy — a 40% win rate with disciplined 1:3 reward-to-risk still compounds.
+
+### 5. Build a Checklist, Not a Feeling
+Write your setup as a checklist: trend filter, level hit, momentum confirmation, stop placement, target, and position size. If the trade does not tick every box, skip it. Journal every entry and exit with screenshots — reviewing 100 trades teaches more than watching 100 videos.`,
+  },
+  {
+    id: "dividend-investing-passive-income-india",
+    title: "Dividend Investing: Building Passive Income That Compounds",
+    summary: "Dividend yields, reinvestment math, REITs, and how to build a cash-flow portfolio alongside growth holdings.",
+    category: "Stocks",
+    readTime: "8 min read",
+    date: "Nov 04, 2026",
+    question: "Create a Dividend Reinvestment (DRIP) Simulator",
+    starterCode: `// Dividend Reinvestment Simulator\n// Model a DRIP portfolio with annual contributions\n\nfunction dripProjection({ shares, sharePrice, dividendYield = 0.02, annualContribution, years, priceGrowth = 0.06 }) {\n  // TODO: Reinvest dividends into shares each year and add contributions\n  return { finalShares: 0, finalValue: 0, totalDividends: 0 };\n}\n\n// Test cases\nconsole.log(dripProjection({ shares: 100, sharePrice: 1000, annualContribution: 50000, years: 10 }));`,
+    content: `Dividend investing is a slow game — but it is one of the few strategies where patience is structurally rewarded.
+
+### 1. Yield Is Not the Scoreboard
+A 12% yield usually signals a market expecting a dividend cut, not a bargain. Look instead for dividend growth: companies that have raised payouts for 10+ consecutive years (the Dividend Aristocrats list). A 2% yield growing at 12% annually overtakes a stagnant 6% yield in roughly a decade.
+
+### 2. The Reinvestment Multiplier
+Dividend reinvestment buys more shares in downturns automatically — you accumulate more units when prices are low without making any decision. Over 20+ years, reinvested dividends contribute the majority of total return in mature dividend payers. Enable DRIP in your broker settings and forget it.
+
+### 3. Payout Ratio: The Safety Check
+Dividend payout ratio (dividends ÷ net profit) above 70% is fragile — earnings dip and the dividend is cut, crushing the share price twice. Under 45% with steady growth is the comfortable zone for most sectors; utilities and REITs run higher by structure, so compare within the sector.
+
+### 4. REITs & Income ETFs for Retail Investors
+REITs must distribute a large share of taxable income as dividends, giving you real-estate exposure without buying property. Covered-call ETFs and dividend-focused funds offer instant diversification. Remember: distributions from foreign assets attract TDS and need to be declared — check the India-US and India-Singapore treaty rates if investing abroad.
+
+### 5. Sequence Matters for Tax
+In India, dividends are taxed at your slab rate, so dividend-heavy portfolios fit better in lower tax brackets or inside structures where taxation is deferred. For most developers, a core of index growth funds plus a satellite of quality dividend payers gives both compounding and cash flow — rebalance annually, never chase yield.`,
+  },
+  {
+    id: "retail-investor-psychology-mistakes",
+    title: "Retail Investor Psychology: 8 Mistakes That Destroy Returns",
+    summary: "FOMO entries, panic exits, averaging losses, and the behavioral traps behind most retail trading losses.",
+    category: "Stocks",
+    readTime: "6 min read",
+    date: "Nov 02, 2026",
+    question: "Build a Portfolio Rebalancing Advisor",
+    starterCode: `// Portfolio Rebalancing Advisor\n// Detect drift from target allocation and suggest trades\n\nfunction rebalance(current, target) {\n  // current/target: { equity: 0.6, debt: 0.3, gold: 0.1 }\n  // TODO: Return list of { asset, action, amount } where drift > 5%\n  return [];\n}\n\n// Test cases\nconsole.log(rebalance(\n  { equity: 0.75, debt: 0.2, gold: 0.05 },\n  { equity: 0.6, debt: 0.3, gold: 0.1 }\n));`,
+    content: `In markets, your biggest enemy is usually the person looking back at you in the mirror. Behavioral discipline beats stock picking skill for most retail investors.
+
+### 1. Loss Aversion & The Disposition Effect
+Psychologically, losses feel roughly twice as painful as equivalent gains feel good. The result: investors sell winners early to lock in the pleasure and hold losers far too long to avoid the pain of realizing the loss. Cut losers by rule, not by feeling — a pre-written stop-loss removes the decision from the moment.
+
+### 2. FOMO Buying at Tops
+Chasing a stock after a 200% rally because "it only goes up" is paying the maximum possible price for maximum optimism. Ask the reverse question: why is this price justified, and what would make the thesis wrong? If you cannot answer both, you are renting a rumor, not owning a business.
+
+### 3. Averaging Down Without a Thesis
+Adding to a falling position is only smart when your fundamental thesis is intact and improved. Averaging down on a stock with deteriorating fundamentals turns a small mistake into a portfolio-sized one. Add to winners you understand; do not marry losers.
+
+### 4. Overtrading & Confirmation Bias
+Every trade pays brokerage, STT, and GST — costs compound against you with frequency. Meanwhile we read only the news that supports what we already believe. Seek disconfirming evidence before buying, and cap yourself to a few high-conviction decisions per quarter.
+
+### 5. Automate the Boring Discipline
+Systematic SIPs, automatic rebalancing at ±5% drift, and a written investment policy statement do more for long-term returns than any indicator. When the crash comes — and it will — your plan already knows what to do, so you do not have to think while afraid.`,
+  },
 ]
+
+// Newest first — dates are formatted "Nov 10, 2026" so plain Date parsing works
+articles.sort((a, b) => new Date(b.date) - new Date(a.date))
+
+export default articles

@@ -1,11 +1,22 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import SidebarPanel from './components/SidebarPanel'
 import EmailCapture from './components/EmailCapture'
+import StockTips from './components/StockTips'
 import articles from './data/articles'
 import { useAnalytics } from './hooks/useAnalytics'
 import AdBlockDetector from './components/AdBlockDetector'
 
-const CATEGORIES = ['All', 'Freelancing', 'Placements', 'Finance', 'Remote Work']
+const CATEGORIES = ['All', 'Freelancing', 'Placements', 'Finance', 'Stocks', 'Remote Work']
+
+// Distinct icon per category (Lucide-style path data)
+const CATEGORY_ICONS = {
+  All: ['M3 3h7v7H3z', 'M14 3h7v7h-7z', 'M3 14h7v7H3z', 'M14 14h7v7h-7z'],
+  Freelancing: ['M12 20h9', 'M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'],
+  Placements: ['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2', 'M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z', 'M22 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75'],
+  Finance: ['M3 3v18h18', 'M7 14l4-4 4 4 5-6'],
+  Stocks: ['M22 12h-4l-3 9L9 3l-3 9H2'],
+  'Remote Work': ['M5 12.55a11 11 0 0 1 14.08 0', 'M8.53 16.11a6 6 0 0 1 6.95 0', 'M12 20h.01'],
+}
 
 export default function App() {
   const [selected, setSelected] = useState(null)
@@ -42,7 +53,9 @@ export default function App() {
   const avgReadTime = totalReadTime > 0 ? Math.round(totalReadTime / totalViews) : 5
 
   const counts = useMemo(() => {
-    const c = { All: articles.length, Freelancing: 0, Placements: 0, Finance: 0, 'Remote Work': 0 }
+    const c = {}
+    for (const cat of CATEGORIES) c[cat] = 0
+    c.All = articles.length
     for (const article of articles) {
       c[article.category] = (c[article.category] || 0) + 1
     }
@@ -226,7 +239,7 @@ export default function App() {
                 className="w-1.5 h-1.5 rounded-full"
                 style={{
                   backgroundColor:
-                    cat === 'Freelancing' ? '#818cf8' : cat === 'Placements' ? '#60a5fa' : cat === 'Finance' ? '#34d399' : cat === 'Remote Work' ? '#a855f7' : '#94a3b8',
+                    cat === 'Freelancing' ? '#818cf8' : cat === 'Placements' ? '#60a5fa' : cat === 'Finance' ? '#34d399' : cat === 'Stocks' ? '#fbbf24' : cat === 'Remote Work' ? '#a855f7' : '#94a3b8',
                 }}
                 aria-hidden="true"
               />
@@ -293,7 +306,7 @@ export default function App() {
       <section id="main-content" className="relative px-4 pb-20">
         <div className="max-w-6xl mx-auto flex flex-col items-center gap-8">
           {/* Category Cards with Live Counts */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full max-w-4xl">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full max-w-5xl">
             {CATEGORIES.map((cat) => (
               <div
                 key={cat}
@@ -310,9 +323,10 @@ export default function App() {
                 onKeyDown={(e) => e.key === 'Enter' && setFilter(cat)}
               >
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3 ${filter === cat ? 'bg-emerald-500/30' : 'bg-emerald-500/15 group-hover:bg-emerald-500/25'}`}>
-                  <svg className={`w-5 h-5 ${filter === cat ? 'text-emerald-300' : 'text-emerald-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  <svg className={`w-5 h-5 ${filter === cat ? 'text-emerald-300' : 'text-emerald-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {(CATEGORY_ICONS[cat] || CATEGORY_ICONS.All).map((d) => (
+                      <path key={d} d={d} />
+                    ))}
                   </svg>
                 </div>
                 <h3 className={`text-center text-sm font-semibold transition-colors ${filter === cat ? 'text-emerald-300' : 'text-slate-300'}`}>{cat}</h3>
@@ -320,6 +334,9 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          {/* Stock Tips — interactive educational carousel */}
+          <StockTips />
 
           {/* Article List Grid */}
           <div className="w-full max-w-6xl px-4">
