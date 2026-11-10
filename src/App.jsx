@@ -13,6 +13,7 @@ export default function App() {
   const [cursor, setCursor] = useState('default')
   const [showEmail, setShowEmail] = useState(false)
   const [showPwaPrompt, setShowPwaPrompt] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
 
   const { trackArticleOpen, trackArticleClose, trackAdImpression, trackAdClick } = useAnalytics()
 
@@ -87,6 +88,13 @@ export default function App() {
     if (selected) {
       trackAdImpression('leaderboard-horizontal')
       trackAdImpression('inline-content-1')
+      // Lock background scroll while sidebar is open
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
     }
   }, [selected, trackAdImpression])
 
@@ -99,40 +107,99 @@ export default function App() {
     }
   }, [selected])
 
-  // PWA install prompt — detect if app is launched standalone
+  // PWA install prompt — show once per session, dismissible and persistently remembered
   useEffect(() => {
-    if ((navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) && !showPwaPrompt) {
-      // Already launched as PWA, don't show prompt
-      return
+    // Capture the browser's install prompt event for the Install button
+    const onBeforeInstall = (e) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
     }
-    // Show install prompt on first visit if not standalone
-    setShowPwaPrompt(true)
-    // Hide after 30 seconds or if user dismisses
-    const timer = setTimeout(() => {
-      setShowPwaPrompt(false)
-    }, 30000)
-    return () => clearTimeout(timer)
-  }, [showPwaPrompt])
+    window.addEventListener('beforeinstallprompt', onBeforeInstall)
+
+    // Don't show if already dismissed, already installed, or in standalone mode
+    if (localStorage.getItem('matrix_pwa_dismissed')) return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall)
+    if (navigator.standalone) return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall)
+    if (window.matchMedia('(display-mode: standalone)').matches) return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall)
+
+    const timer = setTimeout(() => setShowPwaPrompt(true), 1500)
+    // Auto-hide after 45 seconds
+    const autoHide = setTimeout(() => setShowPwaPrompt(false), 46500)
+    return () => {
+      clearTimeout(timer)
+      clearTimeout(autoHide)
+      window.removeEventListener('beforeinstallprompt', onBeforeInstall)
+    }
+  }, []) // Mount only — never re-run on dismissal
+
+  const dismissPwa = useCallback(() => {
+    setShowPwaPrompt(false)
+    localStorage.setItem('matrix_pwa_dismissed', '1')
+  }, [])
+
+  const installPwa = useCallback(async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
+      if (outcome === 'accepted') {
+        setShowPwaPrompt(false)
+        localStorage.setItem('matrix_pwa_dismissed', '1')
+      }
+      setDeferredPrompt(null)
+    } else {
+      // No native prompt available (iOS/desktop) — just dismiss
+      dismissPwa()
+    }
+  }, [deferredPrompt, dismissPwa])
 
   return (
     <div
-      className="relative w-full h-[100dvh] bg-slate-950 text-slate-200 selection:bg-soul-200/30 overflow-hidden"
+      className="relative w-full min-h-[100dvh] bg-slate-950 text-slate-200 selection:bg-emerald-500/30"
       style={{ cursor }}
     >
       <AdBlockDetector />
 
-      {/* PWA Install Prompt — show once per session on mobile */}
-      {showPwaPrompt && !navigator.standalone && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-slate-950 border border-slate-700 rounded-xl p-6 max-w-md w-full text-center shadow-xl transform transition-all duration-500" style={{ display: 'block' }}>
-          <div className="flex items-center justify-center gap-3">
-            <svg className="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-            </svg>
-            <span className="text-slate-300 text-sm">Add Matrix Careers to your home screen for offline access & faster loading</span>
+      {/* PWA Install Prompt — bottom corner, dismissible, remembered */}
+      {showPwaPrompt && (
+        <div className="fixed bottom-4 right-4 left-4 sm:left-auto z-50 sm:max-w-sm bg-slate-900 border border-emerald-600/40 rounded-xl p-4 shadow-2xl shadow-emerald-500/20" role="alert">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+              <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-slate-200">Install Matrix Careers</p>
+              <p className="text-xs text-slate-400 mt-0.5">Add to your home screen for offline access & faster loading</p>
+              <div className="flex items-center gap-3 mt-2.5">
+                <button
+                  onClick={installPwa}
+                  className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
+                  aria-label="Install app"
+                >
+                  Install
+                </button>
+                <button
+                  onClick={dismissPwa}
+                  className="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 text-xs font-medium transition-colors"
+                  aria-label="Dismiss install prompt"
+                >
+                  Not now
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={dismissPwa}
+              className="flex-shrink-0 text-slate-500 hover:text-slate-300 transition-colors p-1 -m-1"
+              aria-label="Close"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
           </div>
-          <button className="mt-3 text-emerald-400 hover:text-emerald-300 text-sm font-medium" onClick={() => setShowPwaPrompt(false)}>Dismiss</button>
         </div>
       )}
 
@@ -152,9 +219,9 @@ export default function App() {
           </div>
           <span className="font-black text-xs tracking-wider text-slate-200 uppercase">Matrix Careers</span>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="hidden md:flex items-center gap-2.5 overflow-x-auto">
           {CATEGORIES.map((cat) => (
-            <span key={cat} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-slate-700/50 bg-slate-800/60 text-[10px] font-bold tracking-wider" role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && setFilter(cat)} onClick={() => setFilter(cat)}>
+            <span key={cat} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-slate-700/50 bg-slate-800/60 text-[10px] font-bold tracking-wider cursor-pointer hover:border-emerald-500/50 transition-colors" role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && setFilter(cat)} onClick={() => setFilter(cat)}>
               <span
                 className="w-1.5 h-1.5 rounded-full"
                 style={{
@@ -170,57 +237,51 @@ export default function App() {
       </header>
 
       {/* Hero Section — first screen clarity with prominent CTAs */}
-      <section id="hero" className="relative pt-24 pb-12">
-        <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-slate-950/90 to-slate-900/90 blur-xl md:h-[400px]"></div>
-        <div className="relative flex flex-col items-center justify-center gap-6 md:gap-8 max-w-5xl px-4">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-100 mb-4">
+      <section id="hero" className="relative pt-28 pb-16 px-4">
+        <div className="max-w-4xl mx-auto flex flex-col items-center text-center gap-8">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
               Matrix Careers
             </h1>
-            <p className="text-2xl md:text-3xl text-slate-400 max-w-2xl">
-              Your interactive Finance & Career Content Hub
+            <p className="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto">
+              Your interactive Finance &amp; Career Content Hub
             </p>
-            <div className="flex items-center justify-center gap-6 mt-6 text-sm text-slate-500">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-sm text-slate-500">
               <span>{articles.length} articles</span>
-              <span>•</span>
+              <span aria-hidden="true">•</span>
               <span>{totalViews} total views</span>
-              <span>•</span>
+              <span aria-hidden="true">•</span>
               <span>~{avgReadTime} min read</span>
             </div>
           </div>
 
-          {/* Primary CTAs — like top careers sites have in first screen */}
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 justify-center mt-8">
+          {/* Primary CTAs */}
+          <div className="grid grid-cols-2 gap-3 md:gap-4 w-full md:w-auto md:grid-cols-4">
             <a
               href="#main-content"
-              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
-              role="button"
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-6 py-3 text-center shadow-lg shadow-emerald-500/30 hover:opacity-90 transition-opacity"
               aria-label="Explore articles"
-              tabIndex={0}
             >
               Explore Articles
             </a>
             <a
-              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
-              role="button"
+              href="#main-content"
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-6 py-3 text-center shadow-lg shadow-emerald-500/30 hover:opacity-90 transition-opacity"
               aria-label="Browse categories"
-              tabIndex={0}
             >
               Browse Categories
             </a>
             <a
-              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
-              role="button"
+              href="#hero"
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-6 py-3 text-center shadow-lg shadow-emerald-500/30 hover:opacity-90 transition-opacity"
               aria-label="View statistics"
-              tabIndex={0}
             >
               View Stats
             </a>
             <a
-              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-8 py-3 shadow-lg shadow-emerald-500/40 hover:opacity-90 transition-opacity"
-              role="button"
+              href="#main-content"
+              className="btn-soul-green text-[11px] font-bold tracking-wider uppercase rounded-full px-6 py-3 text-center shadow-lg shadow-emerald-500/30 hover:opacity-90 transition-opacity"
               aria-label="Latest content"
-              tabIndex={0}
             >
               Latest Content
             </a>
@@ -229,35 +290,33 @@ export default function App() {
       </section>
 
       {/* Main Content Area */}
-      <section id="main-content" className="relative pt-24 pb-12">
-        <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-emerald-500/5 to-transparent blur-xl md:h-[400px]"></div>
-        <div className="relative flex flex-col items-center justify-center gap-6 md:gap-8">
+      <section id="main-content" className="relative px-4 pb-20">
+        <div className="max-w-6xl mx-auto flex flex-col items-center gap-8">
           {/* Category Cards with Live Counts */}
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-5 w-full max-w-4xl">
-            {CATEGORIES.map((cat, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full max-w-4xl">
+            {CATEGORIES.map((cat) => (
               <div
                 key={cat}
-                className={`group flex flex-col items-center justify-center rounded-2xl backdrop-blur-md border cursor-pointer p-4 transition-all shadow-lg ${
+                className={`group flex flex-col items-center justify-center rounded-2xl backdrop-blur-md border cursor-pointer p-5 transition-all ${
                   filter === cat
-                    ? 'bg-emerald-500/15 border-emerald-500/30 shadow-emerald-500/20'
-                    : 'bg-slate-950/80 border-slate-700/30 hover:bg-emerald-500/10 hover:border-emerald-500/30 shadow-emerald-500/10'
+                    ? 'bg-emerald-500/15 border-emerald-500/30 shadow-lg shadow-emerald-500/20'
+                    : 'bg-slate-900/80 border-slate-700/40 hover:bg-emerald-500/10 hover:border-emerald-500/30'
                 }`}
                 onClick={() => setFilter(cat)}
                 role="button"
                 aria-label={`View ${cat} articles`}
+                aria-pressed={filter === cat}
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && setFilter(cat)}
               >
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${filter === cat ? 'bg-emerald-500/30' : 'bg-emerald-500/20'}`}>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3 ${filter === cat ? 'bg-emerald-500/30' : 'bg-emerald-500/15 group-hover:bg-emerald-500/25'}`}>
                   <svg className={`w-5 h-5 ${filter === cat ? 'text-emerald-300' : 'text-emerald-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    <line x1="12" y1="19" x2="12" y2="13" />
-                    <line x1="12" y1="19" x2="18" y2="19" />
                   </svg>
                 </div>
-                <h3 className={`text-center text-xs font-medium transition-colors ${filter === cat ? 'text-emerald-300' : 'text-slate-300'}`}>{cat}</h3>
-                <p className={`text-xs mt-0.5 ${filter === cat ? 'text-emerald-400' : 'text-slate-500'}`}>{counts[cat]} articles</p>
+                <h3 className={`text-center text-sm font-semibold transition-colors ${filter === cat ? 'text-emerald-300' : 'text-slate-300'}`}>{cat}</h3>
+                <p className={`text-xs mt-1 ${filter === cat ? 'text-emerald-400' : 'text-slate-500'}`}>{counts[cat]} articles</p>
               </div>
             ))}
           </div>
@@ -317,7 +376,7 @@ export default function App() {
       {/* Dismiss backdrop behind the slide-in panel */}
       {selected && (
         <div
-          className="fixed inset-0 z-45 bg-slate-900/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[45] bg-slate-900/60 backdrop-blur-sm"
           onClick={handleClose}
           onKeyDown={(e) => e.key === 'Escape' && handleClose()}
           role="button"

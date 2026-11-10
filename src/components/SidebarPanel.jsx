@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, Fragment } from 'react'
 import { X } from 'lucide-react'
 import AdSlot from './AdSlot'
 import CodeSandbox from './CodeSandbox'
@@ -112,7 +112,7 @@ export default function SidebarPanel({ article, articles, onClose, onAdClick }) 
               const isMidpoint = index === mid
               if (isMidpoint) {
                 return (
-                  <>
+                  <Fragment key={`block-${index}`}>
                     {/* Inline content rectangle for guaranteed mid-article viewability */}
                     <ErrorBoundary fallback={<div className="h-32 bg-slate-900/40 border border-dashed border-slate-700/50 rounded-xl my-7 flex items-center justify-center text-xs text-slate-500" role="status">Ad placement loading</div>}>
                       <AdSlot
@@ -123,10 +123,10 @@ export default function SidebarPanel({ article, articles, onClose, onAdClick }) 
                       />
                     </ErrorBoundary>
                     {block}
-                  </>
+                  </Fragment>
                 )
               }
-              return <>{block}</>
+              return <Fragment key={`block-${index}`}>{block}</Fragment>
             })}
           </div>
 
