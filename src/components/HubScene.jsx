@@ -2,13 +2,12 @@ import { useRef, useState, useEffect } from 'react'
 import { Canvas, useFrame, extend } from '@react-three/fiber'
 import { Stars, Text, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import ArticleNode from './ArticleNode'
 
 // Extend drei components into the THREE namespace for R3F
 extend({ Stars, Text })
 
-// Local font file — avoids CDN/CORS crashes that caused the blue screen
+// Local font file — loaded dynamically so a missing module never crashes the canvas
 const FONT_URL = '/fonts/helvetiker_regular.typeface.json'
 
 // Guaranteed-visible starfield using raw THREE.Points
@@ -61,15 +60,23 @@ export default function HubScene({ articles, filter, selectedId, autoRotate, onA
   const [isOrbiting, setIsOrbiting] = useState(false)
   const [font, setFont] = useState(null)
 
-  // Load font imperatively — errors here never crash the Three.js canvas
+  // Load font dynamically — if FontLoader module is unavailable, text labels are skipped
+  // but the canvas (stars + article nodes) still renders
   useEffect(() => {
-    const loader = new FontLoader()
-    loader.load(
-      FONT_URL,
-      (loadedFont) => setFont(loadedFont),
-      undefined,
-      (err) => console.warn('[HubScene] Font load failed, text labels disabled:', err)
-    )
+    let cancelled = false
+    import('three/examples/jsm/loaders/FontLoader.js')
+      .then(({ FontLoader }) => {
+        if (cancelled) return
+        const loader = new FontLoader()
+        loader.load(
+          FONT_URL,
+          (loadedFont) => { if (!cancelled) setFont(loadedFont) },
+          undefined,
+          (err) => console.warn('[HubScene] Font load failed, text labels disabled:', err)
+        )
+      })
+      .catch((err) => console.warn('[HubScene] FontLoader module unavailable, text labels disabled:', err))
+    return () => { cancelled = true }
   }, [])
 
   return (
