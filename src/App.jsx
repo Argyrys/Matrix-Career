@@ -65,7 +65,7 @@ export default function App() {
 
   return (
     <div
-      className="relative w-full h-[100dvh] bg-slate-950 text-slate-200 selection:bg-indigo-500/30 overflow-hidden"
+      className="relative w-full h-[100dvh] bg-slate-950 text-slate-200 selection:bg-soul-200/30 overflow-hidden"
       style={{ cursor }}
     >
       <AdBlockDetector />
