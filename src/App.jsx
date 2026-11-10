@@ -9,9 +9,9 @@ import articles from './data/articles'
 import { useAnalytics } from './hooks/useAnalytics'
 import AdBlockDetector from './components/AdBlockDetector'
 
-// Derived at runtime so canonical/OG/JSON-LD are correct on any host
-// (Vercel preview, production domain, Netlify, localhost) — never hardcode.
-const SITE_URL = typeof window !== 'undefined' ? window.location.origin : ''
+// Canonical domain — owned and permanent, so hardcode rather than derive.
+// Keeping this in sync with the static canonical/OG tags in index.html.
+const SITE_URL = 'https://matrixcareer.in'
 
 const HOME_META = {
   title: 'Matrix Careers | Finance & Career Content Hub',
