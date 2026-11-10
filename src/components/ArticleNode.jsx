@@ -115,10 +115,12 @@ export default function ArticleNode({ article, selected, visible, onSelect, setC
         <torusKnotGeometry args={[4.2, 1.4, 100, 20]} />
         <meshBasicMaterial color={color} transparent opacity={0.5} />
       </mesh>
-      {/* 3D typography label floating above the geometry */}
-      <text ref={textRef} font={font} fontSize={1.0} anchor="center" color="#ffffff" frustumCulled={false}>
-        {shortTitle}
-      </text>
+      {/* 3D typography label floating above the geometry (only when font is loaded) */}
+      {font && (
+        <text ref={textRef} font={font} fontSize={1.0} anchor="center" color="#ffffff" frustumCulled={false}>
+          {shortTitle}
+        </text>
+      )}
     </group>
   )
 }
