@@ -68,7 +68,7 @@ export default function HubScene({ articles, filter, selectedId, autoRotate, onA
             enableZoom
             minDistance={4}
             maxDistance={100}
-            autoRotate={autoRotate && !isOrbiting}
+            autoRotate={false}
             autoRotateSpeed={0.5}
             enableDamping
             dampingFactor={0.06}
