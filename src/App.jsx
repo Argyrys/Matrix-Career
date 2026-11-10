@@ -102,16 +102,38 @@ export default function App() {
         </div>
       </header>
 
-      {/* Full-screen WebGL 3D constellation canvas */}
-      <section id="main-content" aria-label="Interactive 3D article constellation" tabIndex={-1}>
-        <HubScene
-          articles={articles}
-          filter={filter}
-          selectedId={selected?.id}
-          autoRotate={!selected}
-          onArticleSelect={handleArticleSelect}
-          setCanvasCursor={setCanvasBodyCursor}
-        />
+      {/* Soul green theme feature cards section - replaces 3D constellation */}
+      <section id="main-content" aria-label="Featured article categories" className="relative pt-24 pb-12">
+        <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-emerald-500/5 to-transparent blur-xl md:h-[400px]"></div>
+        <div className="relative flex flex-col items-center justify-center gap-6 md:gap-8">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-5 w-full max-w-4xl">
+            {/* Soul green feature cards replacing 3D nodes */}
+            {['All', 'Freelancing', 'Placements', 'Finance', 'Remote Work'].map((cat, i) => (
+              <div
+                key={cat}
+                className="group flex flex-col items-center justify-center rounded-2xl bg-slate-950/80 backdrop-blur-md border border-slate-700/30 hover:bg-emerald-500/15 transition-all hover:border-emerald-500/30 cursor-pointer p-4 shadow-lg shadow-emerald-500/10"
+                onClick={() => {}}
+                role="button"
+                aria-label={`View ${cat} articles`}
+                tabIndex={0}
+                onMouseOver={() => {}}
+                onMouseOut={() => {}}
+                onKeyDown={() => {}}
+              >
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    <line x1="12" y1="19" x2="12" y2="13" />
+                    <line x1="12" y1="19" x2="18" y2="19" />
+                  </svg>
+                </div>
+                <h3 className="text-center text-xs font-medium text-slate-300 transition-colors">{cat}</h3>
+                <p className="text-xs text-slate-500 mt-0.5">articles</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Category Filtering Hub — floating 3D-styled button panel at bottom center */}
