@@ -32,13 +32,13 @@
   }
 
   ::selection {
-    background: #4F6D5C40;
+    background: #818cf840;
     color: #ffffff;
   }
 
   /* Skip link — keyboard accessible */
   .skip-link {
-    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:soul-200 focus:text-white focus:rounded-md focus:font-bold;
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-indigo-500 focus:text-white focus:rounded-md focus:font-bold;
   }
 
   /* Reduced motion — respect user preference */
