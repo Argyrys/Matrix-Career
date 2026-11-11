@@ -19,12 +19,36 @@ const HOME_META = {
     '20 in-depth guides on freelancing, placements, stocks, personal finance and remote work — with calculators, a code sandbox and interactive tools.',
 }
 
-// Resolve a #article-<id> deep link to an article (null when absent/unknown)
-function findHashArticle() {
+// Clean path-based routes: /article/<id> (legacy #article-<id> links still resolve)
+const ARTICLE_PREFIX = '/article/'
+
+function articlePath(id) {
+  return `${ARTICLE_PREFIX}${encodeURIComponent(id)}`
+}
+
+// Format an authored date ("Nov 10, 2026") as local YYYY-MM-DD —
+// toISOString() would shift it back a day in timezones ahead of UTC
+function articleDateISO(dateStr) {
+  const d = new Date(dateStr)
+  const y = d.getFullYear()
+  const mo = String(d.getMonth() + 1).padStart(2, '0')
+  const da = String(d.getDate()).padStart(2, '0')
+  return `${y}-${mo}-${da}`
+}
+
+// Resolve the current URL to an article — path first, then legacy hash
+function findRouteArticle() {
+  const path = window.location.pathname
+  if (path.startsWith(ARTICLE_PREFIX)) {
+    const id = decodeURIComponent(path.slice(ARTICLE_PREFIX.length))
+    return articles.find((a) => a.id === id) || null
+  }
   const raw = window.location.hash
-  if (!raw.startsWith('#article-')) return null
-  const id = decodeURIComponent(raw.slice('#article-'.length))
-  return articles.find((a) => a.id === id) || null
+  if (raw.startsWith('#article-')) {
+    const id = decodeURIComponent(raw.slice('#article-'.length))
+    return articles.find((a) => a.id === id) || null
+  }
+  return null
 }
 
 function setMetaContent(attr, key, value) {
@@ -192,9 +216,9 @@ export default function App() {
     setSelected(article)
     setCanvasBodyCursor('default')
     // Deep-linkable URL so shared links land on the article (and back button works)
-    const hash = `#article-${encodeURIComponent(article.id)}`
-    if (window.location.hash !== hash) {
-      window.history.pushState(null, '', hash)
+    const path = articlePath(article.id)
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path)
     }
     trackArticleOpen(article.id)
     // Trigger email capture on first article open for audience building
@@ -208,35 +232,47 @@ export default function App() {
     if (selected) trackArticleClose(selected.id)
     setSelected(null)
     setCanvasBodyCursor('default')
-    // Drop the article hash without adding another history entry
-    if (window.location.hash.startsWith('#article-')) {
+    // Drop the article path without adding another history entry
+    if (window.location.pathname.startsWith(ARTICLE_PREFIX) || window.location.hash.startsWith('#article-')) {
       suppressHash.current = true
-      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      window.history.replaceState(null, '', '/' + window.location.search)
       setTimeout(() => { suppressHash.current = false }, 0)
     }
   }, [selected, trackArticleClose])
 
-  // Hash deep links: open on load, react to back/forward navigation
+  // Route deep links: open on load, react to back/forward navigation,
+  // migrate legacy #article-<id> URLs to clean /article/<id> paths
   useEffect(() => {
-    const syncFromHash = () => {
+    const syncFromRoute = () => {
       if (suppressHash.current) return
-      const fromHash = findHashArticle()
-      if (fromHash) {
+      const fromRoute = findRouteArticle()
+      if (fromRoute) {
+        // Normalize legacy hash URLs (and any drift) to the canonical path
+        if (
+          window.location.hash.startsWith('#article-') ||
+          window.location.pathname !== articlePath(fromRoute.id)
+        ) {
+          window.history.replaceState(null, '', articlePath(fromRoute.id))
+        }
         rememberScroll()
         setSelected((current) => {
-          if (current?.id !== fromHash.id) trackArticleOpen(fromHash.id)
-          return fromHash
+          if (current?.id !== fromRoute.id) trackArticleOpen(fromRoute.id)
+          return fromRoute
         })
       } else {
+        // Unknown /article/<id> → canonical home URL
+        if (window.location.pathname.startsWith(ARTICLE_PREFIX)) {
+          window.history.replaceState(null, '', '/' + window.location.search)
+        }
         setSelected(null)
       }
     }
-    syncFromHash()
-    window.addEventListener('popstate', syncFromHash)
-    window.addEventListener('hashchange', syncFromHash)
+    syncFromRoute()
+    window.addEventListener('popstate', syncFromRoute)
+    window.addEventListener('hashchange', syncFromRoute)
     return () => {
-      window.removeEventListener('popstate', syncFromHash)
-      window.removeEventListener('hashchange', syncFromHash)
+      window.removeEventListener('popstate', syncFromRoute)
+      window.removeEventListener('hashchange', syncFromRoute)
     }
   }, [trackArticleOpen, rememberScroll])
 
@@ -283,7 +319,7 @@ export default function App() {
   useEffect(() => {
     const canonical = document.querySelector('link[rel="canonical"]')
     if (selected) {
-      const url = `${window.location.origin}${window.location.pathname}#article-${encodeURIComponent(selected.id)}`
+      const url = SITE_URL + articlePath(selected.id)
       document.title = `${selected.title} | Matrix Careers`
       setMetaContent('name', 'description', selected.summary)
       setMetaContent('property', 'og:type', 'article')
@@ -307,7 +343,7 @@ export default function App() {
         headline: selected.title,
         description: selected.summary,
         url,
-        datePublished: new Date(selected.date).toISOString(),
+        datePublished: articleDateISO(selected.date),
         author: { '@type': 'Organization', name: 'Matrix Careers' },
         publisher: { '@type': 'Organization', name: 'Matrix Careers', url: SITE_URL + '/' },
         mainEntityOfPage: { '@type': 'WebPage', '@id': url },
