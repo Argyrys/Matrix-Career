@@ -344,6 +344,7 @@ export default function App() {
         description: selected.summary,
         url,
         datePublished: articleDateISO(selected.date),
+        dateModified: articleDateISO(selected.updated || selected.date),
         author: { '@type': 'Organization', name: 'Matrix Careers' },
         publisher: { '@type': 'Organization', name: 'Matrix Careers', url: SITE_URL + '/' },
         mainEntityOfPage: { '@type': 'WebPage', '@id': url },

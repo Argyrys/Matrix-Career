@@ -10,29 +10,111 @@ import SocialShare from './SocialShare'
 import ReadingProgress from './ReadingProgress'
 import CookieConsent from './CookieConsent'
 
+function renderInline(text) {
+  // Tokenize **bold** and `code` spans; strip orphaned ** markers
+  const tokens = String(text).split(/(\*\*[^*]+\*\*|`[^`]+`)/g)
+  return tokens.map((token, i) => {
+    if (/^\*\*[^*]+\*\*$/.test(token)) {
+      return <strong key={i} className="text-white font-medium">{token.slice(2, -2)}</strong>
+    }
+    if (/^`[^`]+`$/.test(token)) {
+      return (
+        <code key={i} className="rounded bg-slate-800/80 px-1.5 py-0.5 font-mono text-[0.85em] text-emerald-300">
+          {token.slice(1, -1)}
+        </code>
+      )
+    }
+    return token.replace(/\*\*/g, '')
+  })
+}
+
 function parseContent(content) {
-  return content
-    .split(/\n\n+/)
-    .filter((block) => block.trim().length > 0)
-    .map((block, index) => {
-      const headingMatch = block.match(/^###\s+(.+)$/)
-      if (headingMatch) {
-        return (
-          <h3 key={`h-${index}`} className="text-indigo-400 text-lg font-semibold tracking-tight mt-6 mb-2 first:mt-0">
-            {headingMatch[1]}
-          </h3>
+  // Split into blocks on blank lines — never inside ``` code fences
+  const rawBlocks = []
+  let current = []
+  let inFence = false
+  for (const line of String(content).split('\n')) {
+    if (/^\s*(```|~~~)/.test(line)) inFence = !inFence
+    if (!inFence && line.trim() === '') {
+      if (current.length) {
+        rawBlocks.push(current)
+        current = []
+      }
+    } else {
+      current.push(line)
+    }
+  }
+  if (current.length) rawBlocks.push(current)
+
+  return rawBlocks.map((lines, index) => {
+    // Fenced code block (``` or ~~~ fences)
+    if (/^\s*(```|~~~)/.test(lines[0])) {
+      const fence = lines[0].match(/^\s*(```|~~~)/)[1]
+      const body =
+        lines.length > 1 && new RegExp(`^\\s*${fence}\\s*$`).test(lines[lines.length - 1])
+          ? lines.slice(1, -1)
+          : lines.slice(1)
+      return (
+        <pre key={`b-${index}`} className="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950/80 p-4">
+          <code className="whitespace-pre font-mono text-[13px] leading-relaxed text-emerald-300/90">
+            {body.join('\n')}
+          </code>
+        </pre>
+      )
+    }
+
+    // Optional ### heading on the first line (may share a block with its body)
+    let rest = lines
+    let heading = null
+    if (/^###\s+/.test(lines[0])) {
+      heading = lines[0].replace(/^###\s+/, '').trim()
+      rest = lines.slice(1)
+    }
+
+    let body = null
+    if (rest.length > 0) {
+      if (rest.every((l) => /^\s*[-*]\s+/.test(l))) {
+        body = (
+          <ul key={`ul-${index}`} className="list-disc space-y-2 pl-5 text-slate-300 text-sm lg:text-base marker:text-emerald-400">
+            {rest.map((l, li) => (
+              <li key={li} className="leading-relaxed">{renderInline(l.replace(/^\s*[-*]\s+/, ''))}</li>
+            ))}
+          </ul>
+        )
+      } else if (rest.every((l) => /^\s*\d+\.\s+/.test(l))) {
+        body = (
+          <ol key={`ol-${index}`} className="list-decimal space-y-2 pl-5 text-slate-300 text-sm lg:text-base marker:text-emerald-400">
+            {rest.map((l, li) => (
+              <li key={li} className="leading-relaxed">{renderInline(l.replace(/^\s*\d+\.\s+/, ''))}</li>
+            ))}
+          </ol>
+        )
+      } else if (/^\s*>/.test(rest[0])) {
+        const text = rest.map((l) => l.replace(/^\s*>\s?/, '')).join(' ')
+        body = (
+          <blockquote key={`q-${index}`} className="rounded-r-lg border-l-2 border-emerald-500/60 bg-emerald-500/5 py-2.5 pl-4 pr-3 text-slate-300 text-sm lg:text-base">
+            {renderInline(text)}
+          </blockquote>
+        )
+      } else {
+        body = (
+          <p key={`p-${index}`} className="text-slate-300 leading-relaxed text-sm lg:text-base">
+            {renderInline(rest.join(' '))}
+          </p>
         )
       }
+    }
 
-      const parts = block.split(/\*\*(.+?)\*\*/g)
+    if (heading) {
       return (
-        <p key={`p-${index}`} className="text-slate-300 leading-relaxed text-sm lg:text-base">
-          {parts.map((part, partIndex) =>
-            partIndex % 2 === 0 ? part : <strong key={partIndex} className="text-white font-medium">{part}</strong>
-          )}
-        </p>
+        <Fragment key={`b-${index}`}>
+          <h3 className="text-indigo-400 text-lg font-semibold tracking-tight mt-6 mb-2 first:mt-0">{heading}</h3>
+          {body}
+        </Fragment>
       )
-    })
+    }
+    return <Fragment key={`b-${index}`}>{body}</Fragment>
+  })
 }
 
 export default function SidebarPanel({ article, articles, onClose, onAdClick, onSelect }) {
@@ -96,7 +178,7 @@ export default function SidebarPanel({ article, articles, onClose, onAdClick, on
             <span className="px-3 py-1 rounded-full border text-xs font-semibold border-indigo-500/30 bg-indigo-500/10 text-indigo-400">
               {article.category}
             </span>
-            <span className="text-xs text-slate-400">{article.date}</span>
+            <span className="text-xs text-slate-400">{article.updated || article.date}</span>
             <span className="text-xs text-slate-400">{article.readTime}</span>
           </div>
 

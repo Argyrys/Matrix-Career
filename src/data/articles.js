@@ -4,26 +4,112 @@ const articles = [
     title: "Stock Market Investing for Indian Developers: 2026 Blueprint",
     summary: "Open a demat account, start SIPs in index funds, and build your first equity portfolio without losing money to noise.",
     category: "Stocks",
-    readTime: "8 min read",
+    readTime: "7 min read",
     date: "Nov 10, 2026",
+    updated: "Nov 11, 2026",
     question: "Build a Portfolio Allocation Calculator",
     starterCode: `// Portfolio Allocation Calculator\n// Split a lump-sum investment across assets by risk profile\n\nfunction allocate(amount, allocation) {\n  // TODO: allocation = { equity: 0.6, debt: 0.3, gold: 0.1 }\n  // Return exact rupee split, rounding leftovers to the largest bucket\n  return {};\n}\n\n// Test cases\nconsole.log(allocate(100000, { equity: 0.6, debt: 0.3, gold: 0.1 }));\n// Expected: { equity: 60000, debt: 30000, gold: 10000 }`,
-    content: `Your first stock market buy should be a decision you can defend, not a tip you received at 11pm in a Telegram group.
+    content: `Your first stock market buy should be a decision you can defend in writing — not a tip you received at 11pm in a Telegram group. Build the portfolio like a system: clear structure, explicit rules, measurable failure modes.
 
-### 1. Start With the Account, Not the Tips
-Open a demat and trading account with any SEBI-registered broker — Zerodha, Groww, Upstox, or Angel One are all fine. Enable two-factor authentication, use a dedicated email address for financial accounts, and never share OTPs. The broker choice matters far less than the habits you build around it.
+### 1. The Portfolio Architecture
 
-### 2. Index Funds Before Single Stocks
-Nifty 50 and Nifty Next 50 index funds have outperformed most active large-cap funds over a decade while charging expense ratios near 0.2%. A ₹5,000 monthly SIP started at 25 compounds dramatically further than a ₹50,000 SIP started at 40 — time in the market is the lever, not the amount.
+Capital flows through a pipeline, in order. Skip a stage and the next one is unstable:
 
-### 3. The Core-Satellite Approach
-Keep 80-90% of your equity capital in index funds or ETFs as the core. Use the remaining 10-20% for concentrated positions you have actually researched — sectors you work in, businesses you understand deeply. Satellite picks should never break the portfolio if they go to zero.
+~~~
+Monthly surplus
+      |
+      v
+[1. Emergency fund] ---> 6 months of expenses, liquid, untouched
+      |
+      v
+[2. High-interest debt] ---> clear >8% debt before buying equity
+      |
+      v
+[3. Equity core] ---------> 80-90%: Nifty 50 / Next 50 index funds
+      |
+      v
+[4. Satellite] -----------> 10-20%: researched, concentrated bets
+      |
+      v
+[5. Optional] ------------> REITs, gold ETF, international funds
+~~~
 
-### 4. Time in Market Beats Timing the Market
-Systematic investment plans remove the need to predict bottoms. Historically lump-sum investing beats SIPs roughly two-thirds of the time, but SIPs win emotionally — they keep you invested through crashes instead of waiting for a perfect entry that never comes.
+The core does the compounding. The satellite satisfies the need to be active without endangering the plan. A satellite position that can go to zero must never exceed 10% of equity capital — that is a sizing rule, not a preference.
 
-### 5. Taxes That Actually Matter
-Equity held longer than one year attracts long-term capital gains tax at 12.5% above the ₹1.25 lakh annual exemption; shorter holding periods are taxed at 20%. Dividends are added to your slab income. If you want equity exposure alongside Section 80C deductions, ELSS funds serve both goals.`,
+### 2. The Mechanic That Actually Compounds: Fee Drag
+
+Same market return, different expense ratios — the gap over a career is not a rounding error:
+
+~~~js
+const years = 25, marketReturn = 0.12, initial = 500000
+
+function corpus(expenseRatio) {
+  let value = initial
+  for (let y = 0; y < years; y++) {
+    value *= 1 + marketReturn - expenseRatio
+  }
+  return Math.round(value)
+}
+
+corpus(0.015) // active fund charging 1.5%
+corpus(0.002) // index fund charging 0.2%
+// Same market. The difference is six figures on a ₹5 lakh start.
+~~~
+
+This is why Nifty 50 and Nifty Next 50 index funds beat most active large-cap funds over a decade: they do not pretend to outperform, they just stop leaking. A ₹5,000 monthly SIP started at 25 compounds dramatically further than a ₹50,000 SIP started at 40 — time in the market is the lever, not the amount.
+
+### 3. Hard Rules for the Account Layer
+
+The broker choice matters far less than the habits around it. Enforce these like production security policy:
+
+- Any SEBI-registered broker works — Zerodha, Groww, Upstox, Angel One. Features differ; safety does not.
+- Enable two-factor authentication. Use a dedicated email for financial accounts. Never share OTPs — not with "support", not with anyone.
+- Reconcile holdings monthly against the broker's consolidated account statement. Drift you do not measure, you do not catch.
+- One broker for investing, a different one for trading if you must trade — friction is a feature when it slows emotional decisions.
+
+### 4. The Crash Runbook
+
+Nifty fell roughly 38% in five weeks in March 2020. It recovered to new highs in under two years. Every crash feels like the one that is different; the runbook does not care how you feel:
+
+1. **Do not sell.** Selling converts a paper loss into a permanent one and moves you to the sidelines for the recovery — which historically arrives before the headlines calm down.
+2. **Keep the SIP running.** Downturns are when your fixed contribution buys more units. This is the entire mechanical advantage of systematic investing.
+3. **Rebalance if drifted.** If equity has fallen below your target allocation, redirect new money there — or sell a winning bond fund to buy equity. Buy what is cheap relative to your plan.
+4. **Audit, do not churn.** Review whether your income or expenses changed. The portfolio is not the problem; the plan only changes when your life changes.
+5. **Write down the date and your reasoning.** Future-you will read it during the next drawdown. Journal entries beat memory every time.
+
+Systematic investment plans win emotionally even when lump-sum investing wins mathematically about two-thirds of the time — they keep you invested instead of waiting for a perfect entry that never comes.
+
+### 5. Three Structural Foot-Guns
+
+**1. Product churn.** Switching funds every year based on last year's rankings guarantees you harvest exactly the average of every fund's outperformance window — which is to say, nothing. Pick the core, set the SIP, review annually at most. Costs (exit loads, STT, taxes on every switch) compound against you exactly like fees do.
+
+**2. Concentration in your own sector.** Developers already hold one large human-capital position in tech. A portfolio heavy in IT stocks, plus an employer ESOP grant, plus a startup salary = three bets on the same outcome. Diversify across sectors you do not work in. Satellite picks should be boring relative to your day job.
+
+**3. Derivatives as a side income.** SEBI's own studies have found the overwhelming majority of individual F&O traders lose money over multi-year windows — after costs, retail options trading is a negative-sum game against institutions with better data and latency. If you want to learn derivatives, trade them with a capped, written-off budget sized like tuition — never with capital that has a job to do.
+
+### 6. Tax Architecture
+
+Rules that change your after-return math, not your investment thesis:
+
+- Equity held over one year: long-term capital gains at **12.5% above the ₹1.25 lakh annual exemption**.
+- Held under a year: **20%** short-term capital gains.
+- Dividends are added to your slab income — in high slabs, growth funds beat dividend-yielding stocks for pure tax efficiency.
+- Want equity exposure inside Section 80C? ELSS funds deliver it with the shortest lock-in among 80C options.
+- Track your cost basis per lot. Partial sales, bonuses, and transfers all corrupt it — fix the records once, not at filing time.
+
+### 7. When NOT to Put Money in Equity
+
+Candid version: if you do not have six months of expenses in liquid funds, equity is not an option — a job loss in a drawdown forces selling at the worst possible moment. If the money has a deadline inside three years (wedding, down payment, fees), it does not belong in stocks at any expected return. If you would panic-sell at minus 30%, the honest allocation is lower equity until you have lived through a downturn with a smaller position.
+
+The business-alignment version — how to justify the plan to a spouse or to yourself: write a one-page investment policy statement. Target allocation, SIP amount, rebalancing band, what you will never own (F&O, unlisted tips, "guaranteed" schemes), and the conditions under which the plan changes. Every future decision runs against the document, not against mood or group chat. Engineers ship with RFCs; your capital deserves the same.
+
+### 8. The Senior Roadmap and Tooling
+
+- **Stage 1 — Foundations:** index fund SIP, emergency fund, term insurance. Learn at Zerodha Varsity (free, structured, no product pitch). Tools: Kuvera or INDmoney for execution and tracking.
+- **Stage 2 — Analysis:** read one annual report per month. Screener.in for ratios, TradingView for charts, value research for fund portfolios. Understand what a balance sheet is telling you before buying single stocks.
+- **Stage 3 — Concentrated positions:** the 10–20% satellite, sized by conviction with a written thesis per holding — entry reason, invalidation condition, exit target. If you cannot write the thesis in five lines, you are renting a rumor.
+
+Run the portfolio allocation sandbox below with your actual numbers — split your lump sum across equity, debt, and gold by risk profile, and see the rupee split before you commit. Allocation decided once, in calm, is worth more than any ticker pick.`,
   },
   {
     id: "fundamental-analysis-financial-statements",
@@ -58,21 +144,92 @@ You do not need a discounted cash flow model to start. Use a sanity check: if ea
     category: "Freelancing",
     readTime: "7 min read",
     date: "Nov 06, 2026",
+    updated: "Nov 11, 2026",
     question: "Build a Payment Gateway Integration Utility",
     starterCode: `// Payment Gateway Integration Utility\n// Implement a function that calculates total amount including GST and processing fees\n\nfunction calculateTotal(amount, gstRate = 0.18, processingFeePercent = 0.02) {\n  // TODO: Implement tax and fee calculation\n  return 0;\n}\n\n// Test cases\nconsole.log(calculateTotal(10000)); // Expected: 12000 (10000 + 1800 GST + 200 fee)`,
-    content: `Freelancing is one of the fastest ways to build a high-income stream as a developer in India.
+    content: `Freelancing is not "doing projects on the side." It is building a one-person services business — pipeline, pricing, delivery, compliance. Income that is engineered behaves differently from income that is stumbled into.
 
-### 1. Finding Your First Clients
-Instead of competing globally on overcrowded platforms immediately, target regional businesses or software agencies in expanding tech hubs like Raipur, Bengaluru, or Pune. Cold email local agencies offering to sub-contract full-stack development workload.
+### 1. The Client Acquisition Architecture
 
-### 2. Setting Up Invoicing & Taxes
-As a freelance developer in India, you can leverage Section 44ADA of the Income Tax Act (Presumptive Taxation Scheme), which allows professionals to pay tax on only 50% of their gross income if total receipts are under ₹75 Lakhs. Always use professional invoices tracking your Permanent Account Number (PAN) and client specifications.
+Every freelancing income problem is a pipeline problem at some layer:
 
-### 3. Payments & Gateways
-Integrate Razorpay, Paytm Payment Gateway, or Stripe India for client invoicing. Maintain a separate current account for business receipts, and reconcile GST liability where applicable if your annual turnover crosses the threshold.
+~~~
+[Outbound] --------> agencies in tech hubs (Bengaluru, Pune, Raipur)
+   |                 subcontract their overflow work
+   |
+[Inbound] ---------> niche content + portfolio that ranks and gets referred
+   |
+[Marketplaces] ----> Upwork/Fiverr as bootstrap, never as foundation
+   |
+   v
+conversations -> proposals -> closes -> delivered work -> referrals (loop)
+~~~
 
-### 4. Scaling Your Freelance Practice
-Move from hourly billing to fixed-scope retainers. Build a niche (e.g., Shopify themes for D2C brands, or React dashboards for logistics firms) so you stop selling commodity hours and start selling outcomes.**`,
+Pipeline math for the first six months: 20 qualified conversations produce roughly 4 proposals and 1–2 closes. If you are not having five conversations a week, you do not have a demand problem yet — you have an activity problem. Track it like a CRM: one spreadsheet with company, contact, stage, next action, and follow-up date beats any tool you will abandon in a month.
+
+The fastest path in India is subcontracting. Regional agencies and product studios carry more work than they can staff — cold-email them offering white-label full-stack capacity. You get paid reliably while they own sales. It also teaches you delivery standards you would otherwise learn from an angry client.
+
+### 2. The Offer: Positioning That Commands Price
+
+Generalists compete on rate. Specialists compete on outcomes. The offer statement has a formula:
+
+> I help [specific client type] achieve [specific measurable outcome] using [specific stack] — typically in [timeframe].
+
+"I build Shopify storefronts for D2C skincare brands that load under 2 seconds on 4G" gets replies. "Full-stack developer, 5 years experience" gets archived. Pick a niche where you already have an unfair advantage — a domain you worked in, a stack you can demo, an industry you can speak the language of. Niching down feels like shrinking your market; it is how you stop competing with every developer on the continent.
+
+### 3. Tax and Compliance Architecture
+
+Get this layer right once. It is boring, it is mandatory, and mistakes compound into notices.
+
+- **Presumptive taxation (Section 44ADA):** if total receipts stay under ₹75 lakhs, you can declare 50% of gross receipts as taxable income — no books, no audit. Below that threshold, it is almost always the correct default for a solo consultant.
+- **GST:** services crossing ₹20 lakhs annual turnover require registration. **Exports are zero-rated** — file a Letter of Undertaking (LUT) and you can invoice foreign clients without charging GST. This single filing is worth thousands to freelancers serving US/EU clients.
+- **TDS:** Indian clients deduct tax at source under 194J/194C before paying you. Reconcile every deduction against Form 26AS and the Annual Information Statement — unmatched TDS is lost money until you claim it.
+- **Invoices:** serial-numbered, with your PAN, client details, SAC codes, and payment terms. Numbering must be sequential — the tax department reads gaps as suppressed revenue.
+- **Separate accounts:** one current account for business receipts only. Commingling business and personal money makes every reconciliation and notice twice as painful.
+
+### 4. Payments and the Money Runbook
+
+Client intake and currency conversion are different problems — use different tools for each:
+
+1. **Indian clients:** Razorpay or Stripe India for payment links; UPI for speed; invoices with clear due dates.
+2. **Foreign clients:** Wise or Payoneer to receive USD/EUR at mid-market rates; Stripe for card payments; never let the client's bank do your conversion — their spread is 3–6% of your margin. See the multi-currency deep-dive for the full fee comparison.
+3. **Terms in the contract:** 50% advance before work starts, milestone payments for multi-week projects, and a late-payment clause (1.5%/month is standard and rarely enforced — its job is to make payment late rather than the norm).
+4. **Cash discipline:** every payment lands in the business account; salary to yourself is a fixed monthly transfer. Tax money moves to a separate savings bucket the day payment arrives — 30% of every invoice, no exceptions, no exceptions ever.
+
+### 5. Three Foot-Guns That Destroy Margins
+
+**1. Hourly billing without a ceiling.** Hourly billing pays you for time, not outcomes — and it teaches clients to micromanage your clock. Long engagements move to fixed-scope phases or monthly retainers with a defined capacity (e.g., 40 hours/month). The first time a client asks "what are you working on right now," you will know the switch is overdue.
+
+**2. Scope creep without change orders.** The silent margin killer: a "small tweak" per week compounds into a second project delivered at the first project's price. The runbook: every request outside the written scope gets a one-line change order — "Happy to add that. It is roughly X hours, so it adds ₹Y or moves the deadline by Z days. Confirm and I'll start." Clients who respect the scope are the ones you keep. Most will simply say yes to the price — you were giving away billable work out of politeness.
+
+**3. Revenue concentration.** One client above 50% of income is a single point of failure with a termination switch — and you will negotiate from fear because of it. Cap any single client at half your revenue, keep the pipeline running during good months (the classic mistake is stopping outreach when busy — that is exactly when the next pipeline should fill), and treat referrals as a system: ask every happy client at project end, with a specific introduction in mind.
+
+### 6. Scaling: From Hours to Outcomes
+
+The ladder, in order — each rung changes what you sell:
+
+- **Fixed-scope projects** (start here — fastest trust-building for clients who have never hired you).
+- **Retainers** — ongoing maintenance, iterations, and advisory at predictable monthly revenue. Retainers are what make income lumpy-free.
+- **Productized services** — one deliverable, one price, repeatable delivery process ("performance audit in 10 days: ₹X").
+- **Subcontracting others** — you sell the outcome, someone else delivers parts; your margin becomes management. This is the first real business-owner step.
+
+Throughout: keep one niche, keep the case studies quantified (load time cut 60%, conversion up 18%), and let results feed inbound so outbound becomes optional rather than survival.
+
+### 7. When NOT to Freelance (The Cynical Part)
+
+Do not freelance if you have less than six months of expenses in liquid savings — the first three months are sales work, not coding, and desperation shows in your rates. Do not freelance on a visa that requires employer sponsorship — freelancing generally does not qualify as employment for immigration purposes, and the category mismatch is not a paperwork problem you want to have.
+
+Do not freelance if you need predictable income for a fixed obligation (EMIs, family support with no buffer) — the volatility is real in months 1–6. And do not freelance if you cannot stand administration: invoices, follow-ups, contracts, and reconciliation are not "later" tasks; they are the business.
+
+The crossover rule for employed developers: freelance in evenings until freelance income exceeds **60% of salary for three consecutive months**, with a six-month expense buffer — then decide with data, not with daydreams. Pitch the plan to your family in those terms: income floor intact, risk capped, decision date defined.
+
+### 8. The Senior Roadmap and Tooling
+
+- **Months 0–3 — Foundation:** one niche, agency subcontract outreach (5 conversations/week), invoice template, separate current account, LUT filed if serving foreign clients. Tooling: Zoho Invoice (free), a spreadsheet CRM, a plain-text contract template with scope, milestones, IP transfer on final payment, and kill fee.
+- **Months 3–12 — Leverage:** first retainer, first case study with numbers, rate card reviewed quarterly (raise 15–25% every two to three new clients). Tooling: Zoho Books or Khata for accounting, Wise for FX, calendar blocks for deep work.
+- **Year 2+ — Scale:** productized offering, then subcontract delivery. Read one pricing essay per quarter — pricing is the highest-leverage skill in services, above code.
+
+Run the GST and payment sandbox below: calculate the exact total including GST and processing fees before you quote — most underpricing happens at the invoice layer, in numbers the developer never computed.`,
   },
   {
     id: "mca-placement-strategy-guide",
@@ -271,26 +428,162 @@ Use source-map-explorer or webpack-bundle-analyzer. Eliminate unused code with t
     title: "React 19 Features: Server Components & Actions in Production",
     summary: "Practical guide to React 19 Server Components, Server Actions, useFormStatus, and use() hook for modern apps.",
     category: "Freelancing",
-    readTime: "9 min read",
+    readTime: "8 min read",
     date: "Oct 27, 2026",
+    updated: "Nov 11, 2026",
     question: "Build a Server Action Form Handler",
     starterCode: `// Server Action Form Handler\n// Handle form submissions with React 19 Server Actions\n\n'use server';\n\nexport async function submitForm(formData) {\n  // TODO: Validate and process form data\n  const name = formData.get('name');\n  const email = formData.get('email');\n  return { success: true, message: 'Form submitted' };\n}\n\n// Test cases\n// Server Actions run on the server, not in browser`,
-    content: `React 19 introduces the biggest paradigm shift since hooks. Server Components and Server Actions eliminate the client-server boundary for developers.
+    content: `React 19 is not a hooks release. It moves the network boundary. Server Components change where code executes; Server Actions change how mutations reach the server. Everything else is a consequence of those two shifts.
 
-### 1. Server Components Deep Dive
-Server Components run exclusively on the server and ship zero JavaScript to the client. They're perfect for data fetching, database queries, and accessing backend services directly. Use them for static content, heavy libraries, and anything that doesn't need interactivity.
+### 1. The Mental Model: Where Code Runs
 
-### 2. Server Actions
-Server Actions are async functions that run on the server. Call them from client components as event handlers or form actions. They handle serialization, validation, and optimistic updates automatically. No more API routes for simple mutations.
+Three layers now coexist in one component tree:
 
-### 3. useFormStatus & useFormState
-useFormStatus provides pending state during form submission for instant UI feedback. useFormState (now useActionState) manages form state with server-side validation. Together they eliminate boilerplate for form handling.
+- **Server Components.** Render on the server, ship zero JavaScript. Fetch directly from databases and internal services. Cannot use state, effects, or event handlers.
+- **Client Components.** The React you already know — marked with 'use client'. They receive Server Components as children, not as serialized props.
+- **Server Actions.** Async functions declared with 'use server'. Callable from client components as event handlers or form actions; the framework handles RPC, serialization, and revalidation.
 
-### 4. The use() Hook
-The use() hook suspends on promises, enabling data fetching directly in components. Combine with Suspense for streaming SSR. Use for lazy loading data dependencies without waterfall requests.
+The payload flow on every navigation:
 
-### 5. Migration Strategy
-Start with Server Components for data-heavy pages. Incrementally add Server Actions for mutations. Keep existing client components working—they're still supported. Test with React Developer Tools for Server Components visualization.**`,
+~~~
+Browser request
+   |
+   v
+[Server] RSC render ---> Flight payload (serialized tree)
+   |                          |
+   v                          v
+HTML + scripts          [Client] reconcile, hydrate
+   |                          |
+   +-------- next navigation sends payload back as search params
+~~~
+
+Understand one consequence and the rest follows: **props crossing the server-client boundary must be serializable**. Functions cross only if they are Server Actions. Everything else — class instances, promises without use(), database connections — is a hard error or a silent foot-gun.
+
+### 2. Server Components: The Data Layer of Your UI
+
+An async component that queries the database directly — no API route, no useEffect, no loading-state choreography:
+
+~~~jsx
+// app/dashboard/page.jsx — no 'use client' directive
+import { db } from '@/lib/db'
+
+export default async function Dashboard() {
+  const rows = await db.query(
+    'SELECT id, title, views FROM articles ORDER BY views DESC LIMIT 20'
+  )
+  return <ArticleList rows={rows} /> // ArticleList can be a Server Component too
+}
+~~~
+
+Why this beats the old pattern: fetching happens during the server render, so the HTML arrives with data already in it. The client downloads component code only for interactive islands. Heavy dependencies — date libraries, markdown parsers, chart engines — cost the server nothing and the client nothing if they stay in Server Components.
+
+Streaming is the second win. Wrap slow sections in Suspense on the server and flush shell HTML immediately; the slow part streams in when ready. Time-to-first-byte stops depending on your slowest query.
+
+### 3. Server Actions: Mutations Without Boilerplate
+
+~~~jsx
+'use client'
+import { useActionState } from 'react'
+import { subscribe } from './actions'
+
+export function SubscribeForm() {
+  const [state, formAction, pending] = useActionState(subscribe, null)
+
+  return (
+    <form action={formAction}>
+      <input name="email" type="email" required />
+      <button disabled={pending}>
+        {pending ? 'Subscribing...' : 'Subscribe'}
+      </button>
+      {state?.error && <p role="alert">{state.error}</p>}
+    </form>
+  )
+}
+
+// actions.js
+'use server'
+export async function subscribe(prevState, formData) {
+  const email = formData.get('email')
+  if (!email.includes('@')) return { error: 'Invalid email' }
+  try {
+    await db.insert({ email })
+    return { success: true }
+  } catch (err) {
+    logError(err) // server-side logging, never leak internals to the client
+    return { error: 'Temporary failure, try again' }
+  }
+}
+~~~
+
+Three production rules live in that snippet: validate on the server regardless of client validation, catch and log errors server-side while returning generic messages, and let useActionState own pending and error state instead of hand-rolled useState ladders.
+
+### 4. useFormStatus and use()
+
+useFormStatus reads pending state from the nearest parent form — ideal for submit buttons that live in child components:
+
+~~~jsx
+'use client'
+import { useFormStatus } from 'react'
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return <button disabled={pending}>{pending ? 'Saving...' : 'Save'}</button>
+}
+~~~
+
+The use() hook suspends on a promise inside any component — the escape hatch for reading data without an async component boundary:
+
+~~~jsx
+import { use } from 'react'
+
+function Comments({ commentsPromise }) {
+  const comments = use(commentsPromise)
+  return comments.map(c => <p key={c.id}>{c.text}</p>)
+}
+~~~
+
+Use use() for data you already have as a promise (passed from a Server Component, or created with useMemo). It is not a replacement for a data-fetching library in client-heavy apps.
+
+### 5. Three Foot-Guns That Fail in Production
+
+**1. Non-serializable props across the boundary.** Passing a Date, Map, class instance, or database row object from a Server Component to a Client Component throws at build or render time — or worse, silently becomes an empty object in older setups. Serialize explicitly: pass ISO strings and primitives, reconstruct on the client. The boundary is a serialization firewall; treat it like one.
+
+**2. Secrets leaking into the client bundle.** 'use client' marks a module boundary. Import a file that touches environment secrets from a Client Component and bundlers can pull it into the browser — especially with barrel exports (index.js re-exporting everything). Rule: secrets are imported only from 'use server' modules or server-only packages. Enable the server-only package guard and audit your env access in CI.
+
+**3. Action succeeds, UI stays stale.** Server Actions do not automatically refresh every view. Without revalidation, the mutation commits but the list the user is looking at still shows old data — the classic "it saved but nothing changed" bug. Revalidate the affected paths inside the action (revalidatePath or revalidateTag), or update the router cache explicitly. Test mutations against the screen the user actually sees, not the network tab.
+
+### 6. Trade-Offs Against the Alternatives
+
+- **RSC + Server Actions (Next.js App Router).** Best time-to-interactive for content-heavy pages; zero client JS for data display. Cost: a server runtime, streaming semantics to reason about, and a deployment that is not a static host. Operational complexity is real.
+- **Classic CSR SPA (Vite + React).** One artifact, deploy anywhere, trivial local dev. Cost: blank screen until JS loads, data waterfalls in useEffect, and the client pays for every library. Still correct for internal dashboards where every pixel is interactive.
+- **Full SSR without RSC (older Next pages, Remix).** HTML on first paint, one mental model (everything is a client component rendered on the server). Cost: client still downloads all component code; no boundary to keep heavy libraries out of the bundle.
+
+Rule of thumb by latency and complexity: RSC wins when most of the page is read-only data; CSR wins when the page is an editor; full SSR is the middle when you need SEO HTML but your team is not ready for the RSC model.
+
+### 7. Migration Strategy That Does Not Rewrite Your App
+
+1. **Route by route, not branch by branch.** Convert one read-heavy page to Server Components first — a listing or docs page. Measure bundle size and Lighthouse before and after.
+2. **Push the boundary down, not up.** Start with everything server-side and add 'use client' where interactivity demands it. The default of 'use client' at the root recreates your old SPA with extra steps.
+3. **Convert mutations last.** Replace fetch-in-useEffect mutations with Server Actions one form at a time, keeping the old endpoint until parity tests pass.
+4. **Keep islands working.** Existing client components render unchanged as children of Server Components — no rewrites, no context loss.
+
+Verification per route: React DevTools profiler shows which components are client; bundle analyzer confirms the heavy library disappeared from the client graph; Playwright covers the mutation flows end to end.
+
+### 8. When NOT to Use Server Components (The Cynical Part)
+
+If your app is an internal admin tool where every screen is a form and a data grid, RSC buys you nothing — there is no read-only surface to ship for free, and you have added a server runtime to a tool that could have been a static bundle. Skip it.
+
+If you are on plain Vite with no server framework, adopting RSC means adopting Next.js or an equivalent — that is a platform migration, not a React upgrade. Pitch it honestly to stakeholders: "We get faster first loads and smaller bundles in exchange for owning a server deployment and learning new debugging tools." If conversion metrics or Core Web Vitals are not the constraint, the velocity cost wins the argument.
+
+For teams already on a server framework with content-heavy pages, the pitch flips: "This removes megabytes from the client bundle and cuts time-to-interactive without changing our product." Lead with the metric your business already cares about.
+
+### 9. The Senior Roadmap
+
+- **Intermediate → Advanced:** ship one RSC route end to end. Learn the serialization boundary by breaking it deliberately — pass a Date, watch the error, fix it. Debug the Flight payload in the network tab until you can read it.
+- **Advanced → Expert:** own the rendering pipeline. Configure streaming boundaries, implement incremental static regeneration or its equivalent, wire OpenTelemetry spans around server renders and action handlers so regressions are visible in traces, not guesses.
+- **Expert:** make the team productive. Codemods for common conversions, lint rules banning 'use client' at the root, a bundle-budget check in CI that fails the build when client JS grows past a threshold.
+
+Tooling that earns its place: React DevTools Profiler for commit analysis, next-bundle-analyzer (or source-map-explorer) for the client graph, Playwright for mutation flows, vitest + Testing Library for components, and web-vitals tracking in production — measure the change, do not assume it.`,
   },
   {
     id: "tech-salary-negotiation-india-2026",
@@ -299,55 +592,259 @@ Start with Server Components for data-heavy pages. Incrementally add Server Acti
     category: "Finance",
     readTime: "7 min read",
     date: "Oct 25, 2026",
+    updated: "Nov 11, 2026",
     question: "Build a Salary Negotiation Calculator",
     starterCode: `// Salary Negotiation Calculator\n// Evaluate counter-offers and total compensation\n\nfunction evaluateOffer(currentCtc, offerCtc, yearsExperience, skills) {\n  // TODO: Calculate fair market value and negotiation range\n  return { fairValue: 0, range: [0, 0] };\n}\n\n// Test cases\nconsole.log(evaluateOffer(1200000, 1500000, 3, ['React', 'Node']));`,
-    content: `Salary negotiation is a skill that compounds over your career. A successful negotiation can add 20-40% to your compensation.
+    content: `Every compensation number you accept becomes the anchor for your next negotiation. This is a compounding skill: a 30% jump at one hop silently rewrites the ceiling of every hop after it. Treat it like a system with inputs, rules, and failure modes.
 
-### 1. Understand Total Compensation (TC)
-TC = Base Salary + Variable Pay + RSU/ESOPs + Bonuses + Benefits. Don't negotiate on base alone—variable pay can be 20-40% of TC at FAANG companies. Understand vesting schedules and cliff periods for equity.
+### 1. The Compensation Architecture
 
-### 2. Market Research
-Use levels.fyi, Glassdoor, and AmbitionBox for compensation data. Research specific company bands (L3-L7 at Google, E3-E6 at Meta). Factor in location tier—Bangalore/Pune vs remote. Consider company stage (startup equity vs public company RSUs).
+Do not negotiate "salary." Negotiate the structure:
 
-### 3. Negotiation Scripts
-- **Opening:** "Based on my research and the value I bring, I'm targeting [X] in total compensation."
-- **Counter-offer:** "I appreciate the offer. Considering [specific contributions], would you consider [X]?"
-- **Closing:** "I'm excited about this opportunity. Can we work together to bridge the gap?"
+~~~
+Total Compensation
+   |
+   +-- Base ---------> guaranteed, 100% taxable, your floor for loans and rent
+   |
+   +-- Variable -----> target % of base; 0% is a legal outcome at bad companies
+   |
+   +-- Equity -------> RSUs vest over 4 years (1-year cliff) or ESOPs taxed
+   |                    twice: perquisite at exercise, capital gains on sale
+   |
+   +-- Benefits -----> PF, gratuity, insurance, learning budget, WFH allowance
+   |
+   +-- CTC illusion -> Indian CTC includes employer PF and gratuity;
+                        take-home is typically 60-70% of CTC
+~~~
 
-### 4. Counter-Offer Strategy
-Never accept immediately—always ask for 48 hours. Get offers in writing. Evaluate non-salary benefits: remote flexibility, learning budget, conference attendance, additional PTO. Consider the growth trajectory, not just the starting number.
+Three mechanics that catch people off guard: variable pay can be 20–40% of FAANG packages and resets to zero in a bad year; ESOPs are taxed as perquisite income at exercise and again as capital gains at sale — model the actual strike price and liquidity window, not the headline number; and CTC inflation (moving components into "bonus") is a raise that is not a raise.
 
-### 5. When to Walk Away
-If they can't meet 80% of your target and there's no clear growth path, walk away. Toxic culture, unclear expectations, or "we're a family" red flags should override any salary bump.**`,
+### 2. Market Research as Data Work
+
+Run it like research, not vibes:
+
+1. **Triangulate three sources.** levels.fyi for global bands, AmbitionBox for Indian offer data, Glassdoor for verification. One source is an anecdote; three agreeing sources is a range.
+2. **Map the band, not the title.** Google runs L3–L7, Meta E3–E6. Know which level you are being hired at — the same title at two companies can differ by 40%.
+3. **Apply location tiers honestly.** Remote roles at US companies often benchmark to a location tier, not your city. Bangalore premium over tier-2 cities is real but shrinking for remote work.
+4. **Factor company stage.** Early-stage equity is an option with a high chance of expiring worthless; public RSUs are liquid but volatile. Price them differently.
+
+Output of this phase: a defensible range — floor (your walk-away), target (market midpoint), stretch (top of band). Write the three numbers down before any call.
+
+### 3. The Negotiation Protocol
+
+Timeline of a healthy offer cycle:
+
+~~~
+Verbal offer ---> ask for it in writing ---> 48h review ---> counter with data
+      |                                                              |
+      +-------- competing offers disclosed, not weaponized <--------+
+                                                                     |
+                                                             final number in writing
+~~~
+
+Scripts that work because they are specific:
+
+- **Anchoring:** "Based on levels.fyi data for this band and the scope we discussed, I'm targeting ₹X in total compensation. Can you get me there?"
+- **Counter with contribution:** "I appreciate the offer. Considering [measurable contribution — shipped X, cut Y by Z%], would you consider ₹X?"
+- **Closing the gap:** "I'm excited about this role. If base is capped, can we close the gap through signing bonus or an earlier equity refresh?"
+- **The two-day rule:** never accept verbally on the call. "I'm grateful — give me 48 hours to review everything." Silence is a tool; the recruiter is not your adversary, but urgency usually is manufactured.
+
+Multiple offers change the physics. Sequence interviews so offers land in the same window, then state facts without ultimatums: "I have an offer at ₹X with a Friday deadline. This is my preferred team — is there anything you can do to match?" Facts create urgency better than bluffs, and bluffing destroys credibility when checked.
+
+### 4. Three Foot-Guns
+
+**1. Negotiating base while equity and variable collapse.** A 15% base bump with variable cut from 30% to 0% target is a pay cut in disguise. Run every offer through total compensation over four years — base + expected variable + vesting schedule — before responding. Use the negotiation sandbox below to model it.
+
+**2. Accepting, then renegotiating after a counter-offer.** Accepting verbally and reopening once your current employer counters burns the bridge you will need for references and future loops. Correct sequence: disclose the competing offer first, get both numbers in writing, decide once. If you already accepted and regret it, negotiate openly — most rescind over honest renegotiation is less likely than you fear, but do it before your start date, never after.
+
+**3. Taking the counter-offer from your current employer.** The pattern is well documented: money problems get solved in the counter, the underlying reasons (growth, management, scope) do not — and most people who accept counter-offers are gone within a year, now with a reputation for using offers as leverage. Leave for the new opportunity, or fix the actual problem with a direct conversation that does not involve another company's letter.
+
+### 5. Pitch Yourself as ROI, Not as a Candidate
+
+Non-technical stakeholders and HR business partners approve numbers tied to value, not to need. Build the case in their language:
+
+- "I led the migration that cut build times 40% — roughly 15 developer-hours per week saved across the team."
+- "The pricing page rebuild lifted conversion 12% on 50k monthly visitors."
+- "I'm the only person who has operated this system in production for two years — that is a bus-factor risk you are currently carrying."
+
+Quantified impact justifies being paid above band. Vague seniority claims justify being paid at band. Bring one page, not a monologue.
+
+### 6. When NOT to Negotiate (The Cynical Part)
+
+Skip the negotiation — take the offer as-is — in exactly three situations: you have zero leverage (no competing offers, employment gap, first job) and the learning curve at this company is worth more than the delta; the band is genuinely fixed (government-adjacent, published pay bands) and arguing signals poor judgment; or the delta is under 8% and accepting preserves goodwill for a documented 6-month review with a number attached — get that review date in writing before you agree.
+
+Walk away instead of negotiating when: the gap to your floor is above 20% with no path; the culture shows red flags (disorganized loop, pressure to decide same-day, evasive answers about on-call or variable pay history); or equity is the entire gap and the company will not share 409A valuations, strike price, and liquidation preferences. Opaque equity is not compensation — it is a lottery ticket with your signature on it.
+
+The business case for walking: a role that pays 15% below market but burns you out in a year costs more in lost compounding — skill growth, next-hop leverage, and health — than the 15% ever saved.
+
+### 7. The Senior Roadmap and Tooling
+
+- **Early career:** practice on low-stakes negotiations first — freelance rates, hardware budgets, conference travel. The muscle transfers.
+- **Mid career:** build the four-year TC model (base, variable vesting, equity refresh assumptions) in a spreadsheet. Refresh it every offer cycle. Track every offer you receive in a private log — your personal dataset beats crowd-sourced numbers.
+- **Senior+:** negotiate scope, not just money — team size, promotion criteria with dates, research time, conference budgets. At this level, the next promotion is worth more than any single-year delta.
+
+Checklist before every negotiation: three data sources triangulated, floor/target/stretch written down, offer in writing, 48 hours taken, total-comp modeled over four years, one quantified impact statement ready.
+
+Run the sandbox below with your current and offered CTC — evaluate the gap, the fair value range, and whether the counter you are about to make is defensible with data.`,
   },
   {
     id: "system-design-interview-guide",
     title: "System Design Interview: From Zero to Senior Level",
     summary: "Scalability patterns, database selection, caching strategies, and real-world system design walkthroughs.",
     category: "Placements",
-    readTime: "12 min read",
+    readTime: "8 min read",
     date: "Oct 22, 2026",
+    updated: "Nov 11, 2026",
     question: "Design a URL Shortener System",
     starterCode: `// URL Shortener System Design\n// Generate short URLs and handle redirects\n\nclass URLShortener {\n  constructor() {\n    this.urlMap = new Map();\n    this.counter = 0;\n  }\n\n  shorten(url) {\n    // TODO: Generate unique short URL\n    return '';\n  }\n\n  resolve(shortUrl) {\n    // TODO: Return original URL\n    return '';\n  }\n}\n\n// Test cases\nconst shortener = new URLShortener();\nconst short = shortener.shorten('https://example.com/very/long/url');\nconsole.log(shortener.resolve(short) === 'https://example.com/very/long/url');`,
-    content: `System design interviews test your ability to architect scalable, reliable systems. Here's a structured approach.
+    content: `System design interviews do not test whether you know Kafka. They test whether you can reason about failure under constraint. Treat the 45 minutes as an incident review of a system you have already shipped.
 
-### 1. Requirements Gathering (5 minutes)
-Clarify functional requirements: what does the system do? Non-functional requirements: scale, latency, availability, consistency. Estimate: users, QPS, storage, bandwidth. This shows senior-level thinking.
+### 1. The 45-Minute Contract
 
-### 2. High-Level Architecture (10 minutes)
-Start with the big picture: clients, load balancers, application servers, databases, caches. Draw clear boundaries between components. Explain data flow for key use cases. Use standard patterns: CQRS, event sourcing, microservices.
+You do not control the deep dive. You control the foundation. Spend it on this timeline:
 
-### 3. Database Design (10 minutes)
-Choose SQL vs NoSQL based on consistency needs. Design schema with proper indexing. Explain partitioning strategy (horizontal vs vertical). Discuss replication: master-slave, master-master. Address ACID vs BASE trade-offs.
+- **0–5 min — Requirements.** Functional behavior, then non-functional targets: latency SLO, availability, consistency model. Write the SLOs on the board. Every later choice references them.
+- **5–10 min — Estimation.** QPS, storage, bandwidth. Numbers anchor the design and kill hand-waving.
+- **10–30 min — Core architecture.** Draw tiers, narrate data flow for two or three canonical use cases.
+- **30–40 min — Deep dive.** The interviewer picks: schema, scaling, or consistency. Your foundation determines whether this goes well.
+- **40–45 min — Trade-offs and failure modes.** Name what breaks first at 10x.
 
-### 4. Scaling & Optimization (10 minutes)
-Horizontal scaling: stateless services, database sharding. Caching: Redis/Memcached, cache invalidation strategies. Async processing: message queues (Kafka, RabbitMQ). CDN for static content, edge computing for dynamic.
+> Candidates lose interviews in minutes 10–20 by drawing boxes without state. Interviewers are looking for one thing: where does state live, and what happens when that tier dies.
 
-### 5. Reliability & Monitoring (5 minutes)
-Circuit breakers, retry policies, bulkhead patterns. Health checks, auto-scaling, graceful degradation. Monitoring: metrics, logs, distributed tracing. Disaster recovery: backups, multi-region deployment.
+### 2. The Mental Model
 
-### 6. Real-World Walkthroughs
-Practice: URL shortener, Twitter feed, WhatsApp messaging, YouTube video streaming. For each: requirements → architecture → database → scaling → trade-offs. Focus on explaining trade-offs, not "perfect" solutions.**`,
+One diagram covers 80% of designs. Internalize it:
+
+~~~
+[Client]
+   |
+[CDN / Edge]  <--- static assets, cached reads
+   |
+[Load Balancer]
+   |
+[Stateless Service Tier]  <--- horizontal autoscale
+   |            |
+[Cache]       [Queue] ---> [Workers]
+ (Redis)       (Kafka)
+   |____________|
+        |
+ [Primary DB] ---> [Read Replicas]
+~~~
+
+Narrate two paths out loud before adding any technology:
+
+- **Read path:** client → cache (hit: sub-millisecond, done) → miss → DB → populate cache → return.
+- **Write path:** service → validate → write primary → async: replicate, enqueue, invalidate cache.
+
+Everything after the stateless tier exists to protect the stateful tier. Say that sentence and you sound like someone who has run production.
+
+### 3. Estimation Math That Signals Seniority
+
+Do the arithmetic on the board and leave it visible. It drives every later decision — why you shard at a number, why you cache at another.
+
+~~~
+QPS     = (DAU x requests per user per day) / 86400 x peak factor (3-5x)
+Storage = new rows per day x row size x retention days x (1 + index overhead)
+Bandwidth = QPS x average response size
+~~~
+
+Worked example for a URL shortener at 10M DAU, 20 requests/user/day:
+
+- Average QPS: (10M x 20) / 86400 ≈ 2,300. Peak at 4x ≈ 9,200 QPS.
+- Writes: assume 1M new URLs/day x 500 bytes ≈ 500 MB/day ≈ 180 GB/year, plus ~20% index overhead.
+- Read:write ratio ≈ 100:1. This number alone tells you the design is read-dominated → cache the read path first, shard writes last.
+
+### 4. Data Layer Decisions With Strict Criteria
+
+Stop reciting SQL vs NoSQL folklore. Decide on three axes: consistency, write ceiling, query shape.
+
+- **PostgreSQL.** Strong consistency, transactions, complex queries. p99 reads of 5–10ms with proper indexes on one node. **Use it until proven otherwise** — most systems never outgrow it.
+- **Sharded SQL (Vitess, Citus, PgBouncer + manual shards).** When one primary's write ceiling (~10–15k writes/s for typical schemas) or storage becomes the constraint — before you abandon SQL semantics.
+- **DynamoDB / Cassandra.** Single-digit ms at 100k+ writes/s per table, horizontal write scale, predictable latency. Cost: eventual consistency, no joins, query patterns must be designed up front.
+- **Kafka.** Replayable event log, ordering per partition key, 100k+ messages/s per partition. Use when consumers need replay or independent cadence — not as a database.
+
+Decision rules, in order:
+
+1. Need transactions and joins? Relational. Period.
+2. Single node write ceiling hit? Shard the relational store first — you keep SQL and gain scale.
+3. Need audit trails, replay, or decoupled consumers? Add a log (Kafka) alongside the database. The log is not the source of truth unless you commit to event sourcing.
+
+### 5. Caching: The Highest-ROI Section of Any Interview
+
+Cache-aside is the default pattern. Know it line by line:
+
+~~~js
+async function resolveCode(code) {
+  const cached = await redis.get('url:' + code)
+  if (cached !== null) return cached
+
+  const row = await db.query('SELECT target FROM urls WHERE code = $1', [code])
+  if (!row) return null
+
+  // TTL with jitter: prevents mass synchronized expiry
+  const ttl = 3600 + Math.floor(Math.random() * 300)
+  await redis.set('url:' + code, row.target, 'EX', ttl)
+  return row.target
+}
+~~~
+
+Two properties matter more than the code: **TTL with jitter** (keys that expire together re-miss together) and **negative caching** for misses (otherwise every invalid code hits the DB — a trivial denial-of-service vector).
+
+### 6. Three Foot-Guns That Pass the Whiteboard and Fail at 10x
+
+**1. Cache stampede.** A hot key expires; 10,000 concurrent requests miss and hammer the database in the same millisecond. Fix with single-flight: the first miss acquires a short lock, builds the value, others wait or serve stale. Production variant — serve stale while refreshing:
+
+~~~js
+const value = await redis.get(key)
+if (value && !isStale(value)) return value.value
+// stale or missing: only one request per key rebuilds
+if (await redis.set('lock:' + key, '1', 'NX', 'EX', 5)) {
+  const fresh = await rebuild(key)
+  await redis.set(key, serialize(fresh), 'EX', 3600)
+  return fresh
+}
+return value ? value.value : await waitForRebuild(key)
+~~~
+
+**2. N+1 queries.** ORMs lazy-load children by default: one query for the list, then one per row. At 100 rows that is 101 round trips — your p99 killer. Detect it in staging with query logging; fix with JOINs or batched IN queries. This is the single most common production regression in CRUD applications.
+
+**3. Synchronous fan-out.** Service A calls B calls C calls D. Tail latencies multiply: five hops at 20ms p99 each produce a 100ms+ p99 and four points of failure. Convert fan-out to async: enqueue, respond, workers process, push updates via SSE or WebSocket. Reserve synchronous chains for paths where the user is blocked on the result.
+
+### 7. War Stories: What Breaks at 10x and 100x
+
+**At 10x**, the database saturates before anything else. Symptom: CPU climbs from 60% to 90%, p99 doubles, errors follow. The fix is not "add microservices." Runbook, in order:
+
+1. **Shed load first.** Rate-limit the hottest endpoints. Protect the database at all costs — degraded-but-responding beats a dead tier.
+2. **Scale reads.** Add read replicas, move read traffic off the primary. Confirm with replica-lag metrics before trusting them.
+3. **Add cache.** Cache-aside on the hottest queries with measured hit rates. Below 60% hit rate, fix the key design before scaling hardware.
+4. **Only then partition writes.** Shard by a key you can defend (user_id, tenant_id). Shard keys are nearly impossible to change later — choose as if it were permanent.
+
+**At 100x**, one region saturates even with perfect sharding. The sequence: multi-AZ failover (automated, tested), then CDN/edge for read-heavy paths, then active-passive multi-region with async replication — accepting seconds of replication lag as a stated trade-off. Active-active multi-region is a different engineering discipline entirely: conflict resolution, split-brain, idempotency everywhere. Do not volunteer it in an interview unless asked; describe it as the cost ladder's final rung.
+
+### 8. How to Talk So Interviewers Grade You Well
+
+- Narrate trade-offs explicitly: "I'm choosing Postgres because we need transactions; the cost is a write ceiling around 15k/s; if we hit it, we shard by tenant_id."
+- State assumptions out loud and write them down. Silent assumptions are invisible; graded work is visible.
+- Draw the data flow for the killer use case before naming a single technology. Technology is the last mile, not the first.
+- When challenged, respond with numbers from your estimation — not with a different technology.
+
+### 9. When NOT to Over-Engineer (The Cynical Part)
+
+Below 1k QPS, a single Postgres instance plus one Redis and one box beats every distributed system you can draw. Interviewers at startups respect this answer. At big tech, still say it — it signals judgment over catalog knowledge.
+
+Skip Kafka until you have genuine replay or independent-consumer needs. It is an operations tax before that point. Skip multi-region until your SLO demands it — it doubles cost and triples coordination overhead.
+
+The business pitch, in one sentence: "One Postgres with a cache ships in two weeks and covers the next 18 months of growth; a Kafka cluster adds three weeks of operations before the first feature ships." Non-technical stakeholders understand velocity and risk. Lead with those.
+
+### 10. The Senior Roadmap
+
+- **Mid → Senior:** go deep on one database (indexes, EXPLAIN plans, partitioning), one cache, one queue — in production, not tutorials. Read your own slow-query logs weekly.
+- **Senior → Staff:** own incidents end-to-end. Write the postmortem, then the prevention. Learn capacity planning: Prometheus + Grafana for metrics, OpenTelemetry for traces, k6 or Locust for load tests, toxiproxy for fault injection.
+- **Staff+:** write design reviews as RFCs before code exists. Teach estimation to others — the ability to make a team better is the actual promotion criterion.
+
+Practice cadence: one system per week under a 45-minute timer — URL shortener, news feed, chat, video streaming, rate limiter. After each, write a five-line trade-off memo: what I chose, what it cost, what breaks at 10x, what I'd revisit, what I'd never do again.
+
+Interviewers remember candidates who made trade-offs explicit. Everything above is practice for that single skill.`,
   },
   {
     id: "indie-hacker-saas-mvp-2026",
