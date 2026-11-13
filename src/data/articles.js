@@ -745,72 +745,317 @@ Run three full mock LLD sessions: design a rate limiter, a URL shortener, and a 
     category: "Finance",
     readTime: "6 min read",
     date: "Oct 31, 2026",
+    updated: "Nov 13, 2026",
     question: "Build an Emergency Fund Calculator",
     starterCode: `// Emergency Fund Calculator\n// Calculate months of runway based on monthly expenses\n\nfunction calculateRunway(monthlyExpenses, currentSavings) {\n  // TODO: Return number of months of runway\n  return 0;\n}\n\n// Test cases\nconsole.log(calculateRunway(50000, 300000)); // Expected: 6 months`,
-    content: `Landing your first developer job is exciting, but the first paycheck is where lifelong wealth habits are formed.
+    content: `The first paycheck sets every financial habit that follows — tax decisions, savings rate, insurance coverage. Get the architecture right once at 25; compounding does the rest. Get it wrong and you spend a decade correcting it.
 
-### 1. Old vs New Tax Regime
-Under the new tax regime (FY 2026-27), slab rates are lower but most exemptions (HRA, LTA, 80C investments) disappear. If your deductions exceed ₹1.5 Lakhs, the old regime may still win. Run the numbers both ways before filing.
+### 1. The Money Architecture
 
-### 2. EPF, PPF & NPS
-Employee Provident Fund (EPF) is automatic for salaried employees. Complement it with Public Provident Fund (PPF) for tax-free EEE returns and National Pension System (NPS) for additional Section 80CCD(1B) space of ₹50,000.
+~~~
+Monthly net salary
+      |
+      v
+[1. Insurance layer] ---- term + health cover BEFORE any investment
+      |
+      v
+[2. Emergency fund] ------> 6 months of expenses, liquid, untouched
+      |
+      v
+[3. High-interest debt] --> clear >8% loans first (education, cards)
+      |
+      v
+[4. Automatic investing] -> SIP on salary day, remainder to goals
+      |
+      v
+[5. Discretionary] -------- the amount you can spend without guilt
+~~~
 
-### 3. Emergency Fund First
-Before chasing equity or crypto, park 3–6 months of essential expenses in a liquid fund or savings account. This fund is your career-risk insurance.
+Order matters more than amounts. Insurance at 25 costs a fraction of what it costs at 35; an emergency fund at 25 is what prevents a job loss from becoming a debt spiral; SIPs started before lifestyle inflation are worth more than SIPs started with a bigger salary later.
 
-### 4. Health Insurance
-Corporate group mediclaim lapses when you switch jobs. Buy an individual term and health cover early while premiums are low.**`,
+### 2. Tax Regime Selection: Run the Numbers, Both Ways
+
+Under the new regime (FY 2026-27), slab rates are lower but most exemptions — HRA, LTA, 80C, home-loan interest — disappear. The old regime wins only when your deductions and exemptions exceed the new regime's lower-rate benefit.
+
+Decision procedure, every year before filing:
+
+1. Compute taxable income under **both** regimes with actual numbers, not last year's answer.
+2. Factor HRA exemption (rent paid vs salary structure), 80C (EPF + PPF + ELSS up to ₹1.5L), 80CCD(1B) NPS ₹50,000, and home-loan interest if applicable.
+3. If total exemptions clear roughly ₹1.5–2 lakhs, the old regime often still wins; below that, the new regime's lower rates dominate.
+
+Filing default now leans new — you must actively choose the old regime if it wins. Run the calculator below with your offer letter's structure; the delta on a Bangalore salary is routinely ₹20–40k a year for an hour of arithmetic.
+
+### 3. EPF, PPF, NPS: The Tax-Efficient Core
+
+- **EPF (Employee Provident Fund)** — automatic for salaried employees, 12% of basic + DA, employer matched. EEE status: contributions, interest, and maturity all tax-free (subject to conditions on early withdrawal). It is your bond allocation whether you chose it or not.
+- **PPF (Public Provident Fund)** — ₹1.5L/year cap, 15-year lock-in, sovereign-backed tax-free returns. The single best long-horizon debt instrument available to residents. Open it in year one; the compounding clock does not restart.
+- **NPS (National Pension System)** — additional ₹50,000 deduction under 80CCD(1B) *on top of* 80C, equity allocation until 60, and a portion tax-free at maturity. The ₹50k is free tax money if you are already maxing 80C.
+
+Stacking all three — EPF (automatic) + PPF (voluntary debt) + NPS (extra deduction) — fills the tax-advantaged bucket before a rupee touches taxable equity.
+
+### 4. The Emergency Fund: Career-Risk Insurance
+
+Before equity, before crypto, before any "investment": **3–6 months of essential expenses in a liquid fund or savings account.** This is not an investment; it is insurance against your single largest risk — income interruption in a volatile industry.
+
+- Size it on essential expenses only (rent, food, EMIs, premiums), not total lifestyle spend.
+- Park it in an instant-access liquid fund or sweep facility; yield is irrelevant, access speed is everything.
+- Rebuild it immediately after any withdrawal. An emergency fund you do not refill is a one-time buffer.
+
+The mechanic this prevents: a layup in a drawdown forces selling equity at the bottom or taking personal-loan interest at 12%+. Both cost more than the fund ever "earned" sitting liquid.
+
+### 5. Insurance: Buy Young, Buy Separate
+
+Corporate group mediclaim lapses the day you switch jobs — and the new job's group cover starts over with fresh waiting periods. Buy your own, early:
+
+- **Term life** — needed only if someone depends on your income. Buy a pure term plan (cover = 10–15× annual income) while you are young and premium is at its lowest; it never gets cheaper.
+- **Health cover** — ₹5–10L family floater with room-rent and co-pay clauses read carefully. Cumulative bonuses reward claim-free years.
+- **Avoid** — endowment-cum-insurance "money back" products. Insurance and investment are separate layers; mixing them gives you below-market returns on both.
+
+Waiting periods and pre-existing-condition exclusions make delay expensive. At 25, a ₹1 crore term plan routinely costs less per month than a single food-delivery habit.
+
+### 6. Three Foot-Guns
+
+**1. Lifestyle inflation on salary day one.** The salary rises 40%, the SIP rises 0%, and the "I'll save what's left" equation silently fails — there is never anything left. Fix: automate transfers on salary day — emergency fund top-up, PPF/SIP, then the spending account. Pay yourself first or you will not.
+
+**2. Chasing exotic returns with foundational money.** Crypto, F&O, and "guaranteed 24% p.a." schemes target exactly this life stage — new money, impatience, no scar tissue. The rule: foundational layers (fund, emergency, insurance) are boring by design. Speculation, if it happens at all, comes from the discretionary layer with a written-off budget.
+
+**3. No awareness of EPF balance or TDS mismatches.** EPF passbook unreviewed for years, Form 26AS never checked, employer PF deducted but not deposited — these surface at filing time as notices or lost refunds. Fifteen minutes a quarter: check the EPF passbook, match TDS credits to your PAN, reconcile the AIS.
+
+### 7. When NOT to Optimize (The Cynical Part)
+
+Below a certain income, optimization is procrastination with a spreadsheet. If you are earning under ₹6L and have high-interest debt or a skill gap, the highest-ROI use of your time is career investment — one certification, one job hop, one freelance client beats any tax hack worth ₹20k.
+
+Do not buy term insurance or PPF "because articles say so" if you have dependents with no coverage need or cash-flow instability — liquidity you cannot access is a liability regardless of tax status.
+
+The business case for the whole system, in one sentence to yourself: "One hour per month on money mechanics converts ₹60k of monthly salary into a compounding machine that fires without my attention." Attention is the scarce resource; automate the layers and spend it on earning.
+
+### 8. The Senior Roadmap and Tooling
+
+- **Year 1 — Foundations:** regime comparison done properly, EPF account active, PPF opened, term + health bought, emergency fund started (₹25k/month until 6 months). Tooling: the sandbox below, ClearTax for filing, EPFO passbook on a quarterly calendar reminder.
+- **Year 2–3 — Structure:** emergency fund complete, NPS opened for the extra deduction, first index-fund SIP with a written allocation, cost-basis tracking started. Tooling: Kuvera/INDmoney for execution, a single net-worth sheet updated monthly.
+- **Year 4+ — Review cadence:** annual regime check, insurance cover reassessed against income (term cover grows with salary), rebalancing against target allocation. At this stage the system runs itself — your job is raising income, not micro-managing ₹500 allocation differences.
+
+Run the emergency fund calculator below with your real expenses — the number that comes out is the size of the first layer, and everything else in this article waits until it exists.`,
   },
   {
     id: "remote-work-india-career-guide",
     title: "Remote Work Careers for Indian Developers (2026)",
     summary: "Landing USD-paying remote roles, time-zone management, and building an async-first reputation from India.",
     category: "Remote Work",
-    readTime: "8 min read",
+    readTime: "7 min read",
     date: "Oct 30, 2026",
+    updated: "Nov 13, 2026",
     question: "Create an Async Communication Tracker",
     starterCode: `// Async Communication Tracker\n// Log messages across time zones with response SLAs\n\nclass AsyncTracker {\n  constructor() {\n    this.messages = [];\n  }\n\n  logMessage(sender, timezone, timestamp, requiresResponse) {\n    // TODO: Store message with SLA tracking\n  }\n\n  getPendingResponses() {\n    // TODO: Return messages needing response beyond SLA\n    return [];\n  }\n}\n\n// Test cases\nconst tracker = new AsyncTracker();\ntracker.logMessage('Alice', 'PST', Date.now(), true);\nconsole.log(tracker.getPendingResponses().length);`,
-    content: `Remote work has decoupled Indian developer income from local cost-of-living ceilings.
+    content: `Remote work decoupled Indian developer income from local cost-of-living ceilings — but the money only flows to engineers who can prove they deliver without a manager watching them. This is a reputation business run in writing.
 
-### 1. Where the Jobs Are
-Wellfound (formerly AngelList), We Work Remotely, Remote OK, and Orca list thousands of remote roles. Target early-stage US and European startups that hire async-first engineering teams.
+### 1. Where the Jobs Actually Are
 
-### 2. The Async Reputation
-Remote hiring managers value written communication over live interviews. Maintain a public engineering blog, document every project README thoroughly, and contribute asynchronously to open-source repositories.
+The remote market splits into three tiers:
 
-### 3. Time-Zone Strategy
-Overlap windows matter more than full-time availability. Block 4 hours of overlap with your client's time zone and protect deep-work hours ruthlessly.
+- **Tier 1 — Global async-native companies** (GitLab, Zapier, Automattic, HashiCorp): highest bars, full USD/EUR bands, fully documented async processes. Interviews are written — design docs, take-homes, recorded presentations.
+- **Tier 2 — US/EU startups hiring global remote:** Wellfound (formerly AngelList), Remote OK, We Work Remotely, Otta, Hacker News "Who is hiring." Often location-tiered pay; fastest-growing segment for Indian developers.
+- **Tier 3 — Indian companies with global clients:** USD revenue, INR cost base — the compromise path when Tier 1/2 loops are still in progress.
 
-### 4. Payments & Compliance
-Receive USD via Wise, Payoneer, or direct SWIFT. File Form 15CA/CB where required, and track inward remittance through your bank's AD code for FEMA compliance.**`,
+Apply across tiers in the same quarter. Tier 1 loops take months; Tier 2 closes in weeks; the overlap creates leverage and reveals where you actually stand.
+
+### 2. The Async Reputation: Your Real Interview
+
+Remote hiring managers cannot read you across a desk — they read your work history in public. What they find:
+
+1. **READMEs that explain decisions**, not just setup commands. Architecture, trade-offs, why this database, what breaks at scale. This is your portfolio's first impression.
+2. **A public engineering blog** — one post per month on a problem you actually solved. Writing is the primary async skill; the blog is proof you have it.
+3. **Open-source contributions** with reviewed, merged PRs — evidence that you can take feedback through text from strangers and ship.
+4. **A resume with async verbs:** "documented," "specified," "recorded," "handed off" — the vocabulary of people who work without a tap on the shoulder.
+
+The failure mode: engineers with excellent skills and invisible work histories lose Tier 1 loops to weaker candidates with legible output. Make your work legible or it does not count.
+
+### 3. Time-Zone Strategy: Overlap Is Currency
+
+Availability is not the goal; **managed overlap** is:
+
+- **Block 2–4 hours of live overlap** with your team's core hours — same daily window, written in the team wiki. Consistency beats sprawl; people learn when you are there.
+- **Protect deep-work hours ruthlessly** — the other 8 hours are why you took the role. Communicate them ("offline 1:30–6pm IST, async after") so silence reads as schedule, not slowness.
+- **Answer within the overlap for blockers, within 24h for everything else.** Response SLAs — written and honored — are what async teams actually measure.
+- **Run meetings as exceptions:** every recurring meeting needs an agenda doc and notes published within a day; anything without that is an email.
+
+Indian developers serving US teams often invert the day — mornings for deep work, evenings for overlap. It works for years, not forever; negotiate a shifted window with European teams when possible (IST–CET overlap is the gentlest).
+
+### 4. Payments and Compliance (India-Specific)
+
+- **Receive USD/EUR** via Wise or Payoneer at mid-market rates — never let the remitter's bank do the conversion (3–6% hidden spread, see the FX pipeline deep-dive).
+- **Form 15CA/15CB** where required for inward remittances; keep purpose codes and your bank's AD-code records for FEMA compliance.
+- **Invoice foreign clients without GST** by filing a Letter of Undertaking (LUT) — export of services is zero-rated; the freelance blueprint covers thresholds and registration.
+- **Tax residency:** working remotely from India for a foreign employer does not make you a foreign tax resident — global income is taxable in India; claim foreign tax credits if TDS is withheld abroad.
+- **Currency records:** log every conversion (date, rate, fees, INR value) — cost basis for later, and the paper trail tax systems expect.
+
+### 5. Three Foot-Guns
+
+**1. Freelancer-in-disguise risk.** If one "remote employer" controls your hours, equipment, and exclusivity, tax authorities and labor rules may classify you as an employee — with the compliance that implies. Genuine remote employment has a contract, benefits, and structure; genuine freelancing has multiple clients and autonomy. Know which one you signed.
+
+**2. Becoming invisible after onboarding.** The pattern: ship quietly for six months, then get passed over for promotion — or not renewed — because nobody could locate your contributions. Fix: weekly shipped-list in a public channel, demos every two weeks, and a self-authored "impact memo" each quarter.
+
+**3. Time-zone debt.** Permanent evening calls accumulate: missed family dinners, sleep drift, burnout by year two. Budget it like financial debt — service it (shift the window, rotate meeting times, take the occasional day with mornings free) rather than letting it compound.
+
+### 6. War Stories: What Breaks at 10x Scale
+
+- **At 10x your own output,** you hit the personal bottleneck: every request routes through you because you never wrote the runbook. Fix: document each recurring task once, hand off, review the doc instead of the task.
+- **At 10x team size in async companies,** information asymmetry grows — decisions get made in rooms you are not in. Mitigation culture: decisions written in public docs. If your company does not do this, your promotion velocity suffers regardless of output; raise it as a process RFC, not a complaint.
+- **At career scale (5+ years fully remote),** the asset that erodes is the in-person network — mentors, references, the tap-on-shoulder opportunities. Counter: two in-person events a year (conferences, team offsites), and one local relationship-maintenance habit. Remote careers die from network atrophy, not from skill.
+
+### 7. When NOT to Take the Remote Role
+
+Candid version: do not take a "remote" offer at a company whose team sits in one office four days a week — you will be managed as second-class while paid at a discount, and every decision still happens in that office.
+
+Do not go fully remote in your first two years if you have no senior mentor within reach. Early-career growth runs on shoulder-tap learning; remote junior engineers get 60% of the accidental coaching, and the gap shows up at the next interview.
+
+The business case for remote from India: same hours, global rates, and a savings rate impossible in local compensation — the pitch to your family is income arbitrage plus a commute you never make. The pitch against: you must manufacture the visibility and mentorship that offices give free. Choose it when you already know how to work that way, not as an escape.
+
+### 8. The Senior Roadmap and Tooling
+
+- **Stage 1 — First remote offer:** async writing samples ready (two blog posts, two strong READMEs), one open-source PR merged, response-SLA habits installed. Tooling: a public notes/garden site, Notion or Obsidian published selectively, calendar with a protected overlap block.
+- **Stage 2 — Legibility and leverage:** quarterly impact memo, a promotion packet written before the conversation, two application funnels running (Tier 1 + Tier 2) every two years even when happy — offer data is career data. Tooling: levels.fyi + Glassdoor for bands, a private log of every offer received.
+- **Stage 3 — Compounding:** mentor juniors async (it forces documentation), speak once a year, and maintain the in-person network deliberately. At this level the product is your reputation — the blog, the talks, and a track record other managers can verify without meeting you.
+
+Run the async tracker sandbox below against your real inbox — messages past their response SLA are the metric async careers are actually graded on.`,
   },
   {
     id: "frontend-performance-optimization-2026",
     title: "Frontend Performance Optimization: Lighthouse 100 Guide",
     summary: "Complete guide to achieving perfect Lighthouse scores with code splitting, image optimization, and Core Web Vitals.",
     category: "Freelancing",
-    readTime: "10 min read",
+    readTime: "7 min read",
     date: "Oct 28, 2026",
+    updated: "Nov 13, 2026",
     question: "Implement a Lighthouse Performance Score Calculator",
     starterCode: `// Lighthouse Performance Score Calculator\n// Calculate performance score based on Core Web Vitals\n\nfunction calculateLighthouseScore(lcp, fid, cls) {\n  // TODO: Calculate score based on LCP, FID, CLS thresholds\n  return 0;\n}\n\n// Test cases\nconsole.log(calculateLighthouseScore(2500, 100, 0.1)); // Expected: 90+`,
-    content: `Performance isn't just a metric—it's a conversion multiplier. A 1-second delay reduces conversions by 20%. Here's how to achieve perfect scores.
+    content: `Performance is not a metric — it is a conversion multiplier. A 1-second delay cuts conversions ~20%, and Core Web Vitals are ranking signals. Treat the frontend as a delivery system with a hard budget, not a canvas.
 
-### 1. Core Web Vitals Mastery
-- **LCP (Largest Contentful Paint):** Under 2.5s. Optimize hero images, preload critical CSS, use next-gen formats (WebP/AVIF).
-- **FID (First Input Delay):** Under 100ms. Defer non-critical JavaScript, use web workers for heavy computation.
-- **CLS (Cumulative Layout Shift):** Under 0.1. Reserve space for images, use aspect-ratio CSS, avoid dynamic content injection.
+### 1. The Performance Architecture
 
-### 2. Code Splitting Strategy
-Use dynamic import() for route-based splitting. Implement route-level code splitting with React.lazy() so users only download what they need. Vendor chunks should be separated for better caching.
+~~~
+[Network] --> [Parse/Execute] --> [Render] --> [Interact]
+   |               |                |             |
+ LCP: fonts,    JS bundle:      CLS: layout     FID/INP:
+ hero image,    size, hydration  shifts,         main-thread
+ critical CSS   cost             reserved space  blocking
+   |               |                |             |
+   +---- one violated budget drags the whole score ----+
+~~~
 
-### 3. Image Optimization Pipeline
-Convert to WebP/AVIF with fallbacks. Implement responsive srcset with appropriate sizes. Lazy-load below-the-fold images with Intersection Observer. Use blur placeholders for perceived performance.
+Lighthouse's score is dominated by lab metrics you control in CI. Budget them like production SLOs:
 
-### 4. Caching & CDN Strategy
-Set immutable cache headers for hashed assets. Implement service worker for offline-first experience. Use CDN for static assets with edge caching. Configure proper cache invalidation strategies.
+| Vital | Budget | Primary lever |
+|---|---|---|
+| LCP | < 2.5s | hero image weight + critical CSS + preconnect |
+| INP (replaced FID in 2024) | < 200ms | main-thread work + bundle execution cost |
+| CLS | < 0.1 | reserved space for every dynamic element |
+| TBT | < 200ms | total JS shipped and when it executes |
 
-### 5. JavaScript Bundle Analysis
-Use source-map-explorer or webpack-bundle-analyzer. Eliminate unused code with tree shaking. Replace heavy libraries with lighter alternatives (moment.js → date-fns, lodash → lodash-es).**`,
+### 2. The Measurement Loop
+
+Never optimize blind. The loop: measure in the field (what users experience), reproduce in the lab (what you can iterate on), fix, then verify the field number moved.
+
+~~~js
+// Field data first — lab scores lie about real networks
+import { onLCP, onINP, onCLS } from 'web-vitals'
+
+onLCP(sendToAnalytics)   // real user LCP, per page template
+onINP(sendToAnalytics)
+onCLS(sendToAnalytics)
+
+// Lab: Lighthouse CI in your pipeline — fail the build on regression
+// lighthouserc.json: assert { assertions: { 'largest-contentful-paint': ['error', { maxNumericValue: 2500 }] } }
+~~~
+
+Tooling that earns its place: **Lighthouse CI** (budget enforcement), **web-vitals** (field RUM), **source-map-explorer** (bundle attribution), **WebPageTest** (waterfall breakdown by connection type), Chrome Performance panel (main-thread flame chart).
+
+### 3. LCP: The Largest Contentful Paint Budget
+
+LCP is almost always an image or a font. The fix order:
+
+1. **Preload the LCP image.** A hero in a lazy-loaded carousel arrives last — it is your largest paint, make it the first request.
+2. **Preconnect to origins** the LCP resource needs (fonts, CDN): a preconnect link saves a DNS+TLS round trip (~100–300ms on 4G).
+3. **Next-gen formats with explicit dimensions:** AVIF/WebP via picture fallbacks, width/height attributes or aspect-ratio CSS so the slot is reserved before bytes arrive (this is also your CLS defense).
+4. **Critical CSS inline, everything else deferred.** Render-blocking CSS blocks first paint; inline the above-the-fold rules, load the rest async.
+
+~~~html
+<!-- LCP hero: high priority, preloaded, sized, modern format -->
+<link rel="preload" as="image" href="/hero.avif" fetchpriority="high">
+<picture>
+  <source srcset="/hero.avif" type="image/avif">
+  <img src="/hero.webp" width="1200" height="630" alt="" fetchpriority="high">
+</picture>
+~~~
+
+### 4. JavaScript: Ship Less, Execute Later
+
+The bundle is where scores die. Route-level code splitting so users download only what they render:
+
+~~~jsx
+import { lazy, Suspense } from 'react'
+
+const HeavyDashboard = lazy(() => import('./HeavyDashboard'))
+
+// Vendor chunk: hashed, immutable, cached across deploys
+// vite.config.js: manualChunks: { vendor: ['react', 'react-dom'] }
+
+export function App() {
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <HeavyDashboard />  {/* fetched only when the route mounts */}
+    </Suspense>
+  )
+}
+~~~
+
+Execution-cost swaps with measured wins: **moment.js → date-fns** (~67kB → tree-shakeable), **lodash → lodash-es** (named imports enable tree shaking), heavy chart/date/markdown libraries only in the routes that use them. Defer non-critical JS, move pure computation to Web Workers, and break long tasks (>50ms) so INP stays under budget.
+
+### 5. CLS: Reserve Space for Everything
+
+Cumulative Layout Shift is almost always missing dimensions:
+
+- Images and embeds: width/height or CSS aspect-ratio on every media slot.
+- Ads and dynamic banners: fixed-height containers — the ad slot above the fold is the classic CLS crime.
+- Late-arriving content: skeleton placeholders with identical geometry to the loaded state.
+- Fonts: font-display: swap plus metric-compatible fallbacks (size-adjust) — the FOUT reflow is a silent CLS source.
+
+### 6. Caching and CDN Strategy
+
+- **Hashed assets:** a content hash in the filename enables Cache-Control: public, max-age=31536000, immutable. Never cache-bust manually again.
+- **HTML:** short TTL or no-store — it is the pointer to hashed assets.
+- **Service worker / edge caching** for repeat visits: precache the shell, stale-while-revalidate for data.
+- **Invalidation discipline:** content changes invalidate the HTML; asset hashes invalidate themselves. If you find yourself purging constantly, the cache key is wrong.
+
+### 7. Three Foot-Guns That Pass Lab and Fail Production
+
+**1. Optimizing the wrong page.** Lab-testing the homepage while 80% of traffic lands on article and checkout templates — field RUM by template exposes this instantly. Fix order follows field LCP p75, not your favorite page.
+
+**2. Third-party scripts outside the budget.** Analytics, chat widgets, A/B tools, and ad tags routinely add 500ms+ of main-thread work and are invisible in your source-map-explorer output because they are not your code. Audit them like dependencies: load each one with defer, gate tags behind consent and idle callbacks, and kill anything that has not moved a metric in a quarter.
+
+**3. Hydration cost on content pages.** Shipping a full client framework to render static text — a 150kB JS bundle for an article page delays interactivity to pay for interactivity the page barely has. Content-heavy routes should render on the server or statically (see the React 19 RSC piece); keep hydration for the islands that actually respond to clicks.
+
+### 8. War Stories: What Breaks at 10x Traffic
+
+- **CDN misconfiguration at flash traffic:** immutable caching on HTML meant users saw stale pages for an hour after deploy. Runbook: verify cache headers per content type in CI with curl assertions, never immutable on HTML.
+- **CLS spike from a late-injected widget:** a consent banner pushing content down cost a retail client 0.18 CLS and measurable ranking movement. Fix: banner reserves layout from first paint.
+- **Bundle creep over six quarters:** each team added "just one library" — the vendor chunk went 180kB to 640kB with no single culprit. Fix: CI bundle budget that fails the build past a threshold, plus a weekly diff report so growth is visible while it is cheap.
+
+### 9. When NOT to Chase 100 (The Cynical Part)
+
+A Lighthouse 100 is a lab vanity number on a throttled emulated device with no third parties. Do not chase it once field p75s are inside budget — marginal hours on the last 3 points have lower ROI than the next feature or the next fix that matters to users.
+
+Do not adopt a service worker or a micro-frontend architecture for performance theater: a service worker you cannot debug at 2am is an outage amplifier, and splitting a 400kB app into 12 independently-deployed bundles rarely reduces bytes — it adds network round trips.
+
+The business pitch: performance converts directly — "this fix moves LCP from 3.8s to 2.1s on 4G, which historically tracks a few points of conversion lift on this template." Stakeholders fund velocity and risk reduction; lead with the conversion number, not the Lighthouse badge.
+
+### 10. The Senior Roadmap
+
+- **Intermediate → Advanced:** own the numbers for one product — RUM dashboards by template, a CI budget that fails regressions, and a before/after record for every optimization you ship. Learn the waterfall and the flame chart cold.
+- **Advanced → Expert:** shift performance left — bundle budgets, image-lint rules (no un-sized images, no above-fold lazy-load), and performance review as part of design review for heavy features. Telemetry: web-vitals in production, traces via OpenTelemetry, alerts on p75 regressions.
+- **Expert:** make the team faster at fixing — a performance playbook per template, an owned third-party tag policy, and quarterly audits of the field data. The promotion-grade artifact is a system where regressions cannot survive review.
+
+Practice cadence: take any page you use daily, budget it, measure it, find its three worst offenders in the waterfall, fix them. Do that five times and you will never again treat Lighthouse as a mystery.`,
   },
   {
     id: "react-19-features-production",
@@ -1240,52 +1485,199 @@ Interviewers remember candidates who made trade-offs explicit. Everything above 
     title: "Indie Hacker SaaS MVP: From Idea to First $1K MRR",
     summary: "Validating SaaS ideas, building MVPs with no-code/low-code, pricing strategies, and reaching first customers.",
     category: "Freelancing",
-    readTime: "8 min read",
+    readTime: "7 min read",
     date: "Oct 20, 2026",
+    updated: "Nov 13, 2026",
     question: "Build a SaaS Metrics Dashboard Calculator",
     starterCode: `// SaaS Metrics Calculator\n// Calculate MRR, churn, LTV, and CAC\n\nfunction calculateSaaSMetrics(mrr, customers, churnRate, cac) {\n  // TODO: Calculate key SaaS metrics\n  return { mrr, churn: 0, ltv: 0, payback: 0 };\n}\n\n// Test cases\nconsole.log(calculateSaaSMetrics(10000, 100, 0.05, 200));`,
-    content: `Building a profitable SaaS isn't about perfect code—it's about solving a real problem for a specific audience.
+    content: `Building a profitable SaaS is not about perfect code — it is about selling a specific outcome to a specific audience before you have built it. The product is the last thing you should validate.
 
-### 1. Idea Validation Before Code
-Talk to 50+ potential customers before writing a line of code. Identify painful problems people currently pay to solve. Check competition—existing competitors mean validated market. Validate willingness to pay: can you pre-sell before building?
+### 1. The Validation Architecture
 
-### 2. MVP Scope Discipline
-Build the smallest possible product that solves ONE core problem well. Resist feature creep—every feature adds maintenance burden. Use no-code/low-code when possible: Bubble, Webflow, Zapier. Ship in weeks, not months. Get to market fast.
+~~~
+[Idea] ---> [50 conversations] ---> [pre-sell] ---> [MVP] ---> [iterate]
+ |                |                    |              |           |
+problem       people who           money moves      ONE core     usage
+already       already pay          before code      problem      data
+costs them    for a fix
+      |
+      +--- kill criteria: no willingness to pay after 50 talks -> walk away
+~~~
 
-### 3. Pricing Strategy
-Start with value-based pricing, not cost-plus. Offer3 tiers: Free (trial), Pro (most popular), Enterprise (custom). Annual billing with discount for cash flow. Anchor high—most customers choose middle tier.
+Validation is a pipeline with kill criteria, not a vibe check. Talk to 50+ potential customers who **already pay** for a workaround — spreadsheets, agencies, competitors. A market where nobody pays is a market where nobody will pay you either.
 
-### 4. First100 Customers
-Content marketing: SEO-optimized blog posts solving customer problems. Community engagement: Reddit, Twitter/X, niche forums. Product Hunt launch for initial visibility. Cold outreach: personalized emails to ideal customers. Partnerships: integrations with complementary tools.
+Evidence of a validated idea, in order of strength:
 
-### 5. Metrics That Matter
-MRR (Monthly Recurring Revenue): your north star. Churn rate: <5% monthly is healthy. LTV:CAC ratio: should be >3:1. Payback period: <12 months is ideal. NPS: measure customer satisfaction for retention.**`,
+1. **Pre-sales** — someone pays before the product exists. Nothing else compares.
+2. **Letters of intent** from companies with budget authority, not enthusiasm.
+3. **A competitor making money.** Existing competitors mean a validated market with proven willingness to pay — entering it is strategy, not a red flag.
+4. Waitlist signups. Weakest signal; people sign up for anything free.
+
+### 2. MVP Scope Discipline: One Problem, Done
+
+The MVP solves **one core problem** well for **one persona**. Every feature beyond that adds maintenance burden to a product with zero revenue and dilutes the one thing it must prove.
+
+Scope test for any feature request — including your own:
+
+- Does it move the single metric the MVP exists to prove (activation, retention, payment)?
+- Can a human concierge it manually for the first ten customers? If yes, defer the code.
+- Will it survive contact with real usage data, or is it a guess in disguise?
+
+No-code/low-code where it buys speed: **Stripe** for billing (never roll your own), **Clerk/Auth** for login, **Supabase** for the backend, **Plausible** for analytics, **Zapier/Make** for integrations the first three customers demand. The goal is weeks-to-market, not architecture points. Ship manual before you build automatic.
+
+### 3. Pricing: The Highest-Leverage Decision
+
+Price on **value**, not cost-plus, and price before launch:
+
+- **Three tiers:** Free (trial or limited) → Pro (most popular, the anchor you actually want) → Enterprise (custom, exists to make Pro look sane). Annual billing with ~20% discount for cash flow.
+- **Anchor high.** Most customers choose the middle tier — if your Pro is underpriced, you have left the anchor on the floor.
+- **Price to the outcome.** If your tool saves a team 20 hours a month, $49/month is cheap and $9 is suspicious. Underpricing is the most common indie failure: it attracts the worst customers and funds no support.
+
+Revisit pricing every quarter until revenue stabilizes. Raising prices on new customers is free; raising them on existing ones is a conversation — do it early, before the base hardens.
+
+### 4. The First 100 Customers: Channels in Yield Order
+
+1. **Founder-led sales** — 1:1 outreach to the exact persona you validated with. Slow, unscalable, and the only channel that teaches you how people buy.
+2. **Communities where your buyers already are** — Reddit, niche Slack/Discords, LinkedIn. Answer questions with genuine expertise; the product appears when it is relevant, not when you spam.
+3. **Content that ranks on the problem** — SEO posts answering the exact search that precedes purchase. Long-tail conversion beats viral traffic.
+4. **Launches for initial visibility** — Product Hunt, Hacker News Show HN, relevant newsletters. A spike, not a strategy; have the onboarding ready before you press the button.
+5. **Partnerships/integrations** with complementary tools — one good integration can double the surface area of your distribution.
+6. **Cold outreach** personalized to a trigger event (new hire, funding round, migration). Last, because it scales worst.
+
+Track all of it in one sheet: channel, conversations, trials, conversions, CAC. After 100 customers you will know which channel deserves the next 100.
+
+### 5. Metrics That Actually Run the Business
+
+- **MRR** — the north star; net-new MRR minus churned MRR, reviewed weekly.
+- **Churn** — under 5% monthly is healthy for SMB; above 8% and acquisition is a leaking bucket — fix retention before spending on growth.
+- **LTV:CAC** — above 3:1 or the machine does not pay back; below 2:1 and growth destroys value.
+- **Payback period** — under 12 months keeps cash flow survivable as a solo founder.
+- **Activation → retention cohort curve** — the single most honest chart: do customers who use feature X stay? Retention that flattens above zero means product-market fit; retention that decays to zero means no amount of traffic saves it.
+
+~~~js
+// The weekly review, computed honestly
+function saasHealth(mrr, churnRate, cac, ltv) {
+  const ltvRatio = (ltv / cac).toFixed(1)
+  const verdict =
+    churnRate > 0.08 ? 'RETENTION PROBLEM — stop acquiring' :
+    ltvRatio < 2     ? 'UNIT ECONOMICS — price or CAC broken' :
+    'HEALTHY — pour fuel'
+  return { mrr, monthlyChurn: churnRate, ltvCac: ltvRatio, verdict }
+}
+~~~
+
+### 6. Three Foot-Guns
+
+**1. Building instead of selling.** Six months of solo coding with zero customer conversations is the default indie trajectory and the most expensive one. Timebox: every week of building needs a week of talking to prospects in parallel. If you cannot name your next five prospects, you are hiding in the code.
+
+**2. Feature debt from saying yes to everyone.** The first big customer asks for a custom feature; you say yes; now you run a consultancy with a product attached. Rule: features ship for a persona, not an account. Custom needs get workarounds, integration guides, or a no — politely, in writing.
+
+**3. Churn blindness.** Watching new signups while monthly churn quietly sits at 10% is watching the bucket fill from the top while it drains from the bottom. Kill the growth spend until the cohort curve flattens; retention is the product, acquisition is the amplifier.
+
+### 7. When NOT to Build the SaaS
+
+Candid version: if validation produced no pre-sales after 50 serious conversations, the idea is dead — mourning it is cheaper than building it. And if you have no distribution advantage (an audience, an SEO head start, a community you belong to), solo SaaS against funded competitors with paid acquisition is a grind with negative expected value; productized services or content monetization will pay you sooner for the same skills.
+
+Do not start a SaaS as an income bridge while unemployed — runway pressure makes you build the wrong thing (anything that might sell) for the wrong customer (whoever replies). SaaS rewards patience from a position of stability.
+
+The business pitch to yourself: "I can validate this for the cost of 50 conversations and two landing pages, or build it for six months of evenings. Validation runs first because a dead idea is cheap to discover and expensive to build." Non-technical stakeholders — including your future self — understand velocity and risk. Lead with those.
+
+### 8. The Senior Roadmap and Tooling
+
+- **Stage 1 — First $1K MRR:** validate with pre-sales, ship the one-problem MVP, charge from day one, weekly metrics review. Tooling: Stripe (billing + tax handling), Supabase, PostHog or Plausible, a metrics spreadsheet, Calendly for sales calls.
+- **Stage 2 — $1K → $10K:** double down on the one channel that worked, raise prices, kill the churn, write the onboarding that activation data demands. Tooling: Stripe Billing for dunning and trials, a simple CRM, Churnkey or similar for cancellation flows, customer interviews on a calendar.
+- **Stage 3 — Systems:** automate the concierge work that survived, add the second persona only when the first is retained, and decide deliberately — lifestyle business (profitable, lean, yours) or venture path (raise, or stay profitable and unraised — both are valid exits from the grind).
+
+Run the metrics sandbox below with your real numbers — the verdict line is the conversation to have with yourself every Monday.`,
   },
   {
     id: "ai-ml-career-transition-2026",
     title: "Transitioning to AI/ML Engineering: 2026 Roadmap",
     summary: "From software engineering to ML: prerequisite skills, portfolio projects, interview prep, and landing your first ML role.",
     category: "Placements",
-    readTime: "9 min read",
+    readTime: "6 min read",
     date: "Oct 18, 2026",
+    updated: "Nov 13, 2026",
     question: "Build a ML Model Training Pipeline",
     starterCode: `// ML Model Training Pipeline\n// Handle data splitting, training, and evaluation\n\nclass MLPipeline {\n  constructor(model, features, target) {\n    this.model = model;\n    this.features = features;\n    this.target = target;\n  }\n\n  train(testSize = 0.2) {\n    // TODO: Split data, train model, return metrics\n    return { accuracy: 0, f1: 0 };\n  }\n\n  predict(input) {\n    // TODO: Make prediction\n    return 0;\n  }\n}\n\n// Test cases\nconst pipeline = new MLPipeline('logistic_regression', ['age', 'income'], 'defaulted');`,
-    content: `AI/ML engineering is the highest-demand tech role in 2026. Here's how to make the transition from software engineering.
+    content: `The market does not hire "people who learned ML." It hires engineers who can ship models that survive production — and interviewers can tell the difference in one question. This transition is a retooling, not a course completion.
 
-### 1. Prerequisite Foundation
-Solid Python programming is non-negotiable. Statistics: distributions, hypothesis testing, regression. Linear algebra: matrices, eigenvalues, SVD. Calculus: gradients, optimization, chain rule. SQL mastery for data extraction.
+### 1. The Transition Architecture
 
-### 2. Core ML Skills
-Supervised learning: regression, classification, tree-based models. Unsupervised learning: clustering, dimensionality reduction. Deep learning: neural networks, CNNs, RNNs, Transformers. MLOps: model versioning, monitoring, A/B testing.
+~~~
+[Software engineer] ---> [Math + Python foundation] ---> [Core ML] ---> [ML systems]
+        |                        |                          |               |
+   already has:            distributions, linear        classic models,   training
+   production habits,      algebra, gradients           eval discipline   pipelines,
+   SQL, testing                                                 monitoring,
+                                                                 deployment
+        |______________________ one end-to-end project ties it all ______|
+                                     (the portfolio piece)
+~~~
 
-### 3. Portfolio Projects (Show, Don't Tell)
-End-to-end ML projects with deployed models. Kaggle competitions with top-10% finishes. Open-source ML library contributions. Research papers implemented from scratch. Production-grade ML pipelines with monitoring.
+You are not starting from zero — you are porting engineering discipline into a new domain. The engineers who fail this transition treat it as studying; the ones who succeed treat it as building.
 
-### 4. Interview Preparation
-ML system design: design a recommendation engine, fraud detection system. Coding: LeetCode medium + ML-specific problems (implement gradient descent, k-means). Statistics: explain p-values, confidence intervals, bias-variance tradeoff. Case studies: real business problems with ML solutions.
+### 2. The Foundation: Just Enough Math, In This Order
 
-### 5. Landing Your Role
-Target ML Engineer, Applied Scientist, or Research Engineer roles. Network at ML conferences: NeurIPS, ICML, local meetups. Contribute to open-source ML frameworks: PyTorch, Hugging Face. Blog about your ML projects and learnings. Consider ML Ops or Data Scientist roles as stepping stones.**`,
+Learn math through the models, not a textbook cover to cover:
+
+1. **Python + SQL, production-grade** — non-negotiable and mostly free if you already ship. pandas/numpy fluency, clean environments, tests.
+2. **Probability and statistics** — distributions, hypothesis testing, p-values, confidence intervals, train/test leakage. This is where interviews actually separate candidates.
+3. **Linear algebra through the code** — matrices, eigenvalues, SVD. Implement them once in numpy; you will never forget them.
+4. **Calculus for optimization** — gradients and the chain rule, derived by hand for linear regression and logistic regression once. Then gradient descent from scratch in 30 lines.
+
+A useful filter: if you cannot explain bias-variance tradeoff with a whiteboard example and point to where it appears in your own project, you are not ready to interview.
+
+### 3. Core ML Skills by Demand
+
+- **Supervised classics** — linear/logistic regression, random forests, gradient boosting (XGBoost/LightGBM still run most business ML in 2026; deep learning is not the default answer to tabular data).
+- **Unsupervised** — clustering, dimensionality reduction for exploration and feature work.
+- **Deep learning** — CNNs for vision, Transformers for text and everything text-shaped; understand attention at the level of "what it computes and why it scales," not from-scratch paper reproduction.
+- **MLOps** — model versioning (MLflow/DVC), feature stores at scale, monitoring for drift and skew, A/B testing models, retraining triggers. This is the layer employers pay the most for and candidates prepare the least.
+
+### 4. Portfolio Projects: One End-to-End Beats Five Tutorials
+
+Interviewers read portfolios for one signal: did this person take a problem to a **deployed, monitored** endpoint?
+
+The project that converts:
+
+1. **Real data with real mess** — a public dataset cleaned with documented decisions, or better, scraped/API-collected with a note on ethics and ToS.
+2. **Honest baseline first** — a simple model scored before the fancy one, with a stated reason for each upgrade.
+3. **Leakage hunt** — an explicit section on what you checked (temporal splits, target leakage, group leakage). This section alone puts you above most candidates.
+4. **Deployment** — an API endpoint (FastAPI), containerized, with latency and throughput numbers stated.
+5. **Monitoring** — drift detection and a retraining policy, even if simple.
+
+Secondary signals: one Kaggle competition with a defensible top-tier finish, one open-source contribution to PyTorch/Hugging Face, one paper implemented from scratch with a blog explaining what you learned. Two of those, plus the end-to-end project, are plenty.
+
+### 5. The Interview Loop: Four Surfaces
+
+- **ML system design** — "design a fraud detection system / recommendation engine / search ranking." Structure it: problem framing and metrics, data and labels, model selection with trade-offs, training/evaluation (offline vs online), deployment, monitoring. Same discipline as software system design — requirements first, technology last.
+- **Coding** — LeetCode medium plus ML-specific implementations: gradient descent, k-means, a tokenizer, a simple attention block. Whiteboard-fluent numpy, not library calls.
+- **Statistics** — p-values and what they do not mean, confidence intervals, A/B test design and peeking, bias-variance, the difference between correlation and a randomized experiment. Expect to be wrong and pushed on it; defend or update, do not fold.
+- **Case studies** — a business problem with messy data. Interviewers watch how you frame it: what metric moves, what could go wrong, how you would validate before shipping.
+
+### 6. Three Foot-Guns
+
+**1. Course hoarding.** Twelve certificates and zero deployed models is the transition's most common failure mode — courses are input, portfolios are output. Rule: one course, one applied project, immediately. Certificates do not survive the second interview question.
+
+**2. Deep-learning-first for everything.** Reaching for a neural network on a 50k-row tabular dataset wastes weeks and loses to gradient boosting. Signal seniority by matching tool to data: the interview answer "XGBoost with careful features, because the data is tabular and small — here is when I would switch" beats a Transformer pitch every time.
+
+**3. Underestimating the MLOps gap.** A model that cannot be retrained, monitored, or rolled back is a notebook, not a system. Read the job descriptions: half of "ML Engineer" is pipelines, monitoring, and serving. Learn MLflow, basic Docker/K8s serving, and one feature-store concept before applying.
+
+### 7. When NOT to Make the Switch
+
+Candid version: if you are running from software engineering rather than toward ML work, the switch costs a seniority reset you will feel for two years. Staying a strong SWE with ML literacy — who can collaborate with and review ML work — often compounds faster than restarting on the IC ladder in a crowded field.
+
+Do not switch purely on salary headlines: the top bands are for people with demonstrated depth (publications, strong systems experience, competition wins), and the entry market is now saturated with course-completers. If after six months of evenings you still cannot explain your own project's failure modes, the honest read is interest without aptitude — and that is fine data to have.
+
+The business pitch: transition as a **parallel track for 6–9 months** — keep the SWE income, build the portfolio on evenings, apply only when the interview loop feels like practice rather than panic. The pitch to yourself: "I keep my compounding career and buy an option on a new one, at the cost of discretionary time — until one path clearly wins."
+
+### 8. The Senior Roadmap and Tooling
+
+- **Months 0–3 — Foundations:** statistics + linear algebra through code, pandas fluency, one clean ML project started (data + baseline). Tooling: FastAPI, scikit-learn, a public notebook repo with a real README.
+- **Months 3–6 — Core models and one deep-dive:** gradient boosting, one deep-learning domain relevant to your target roles, the end-to-end project deployed with monitoring. Tooling: MLflow or DVC, Docker, PostHog/MLflow tracking, Weights & Biases.
+- **Months 6–9 — Interview surface:** ML system design practice (three full designs), coding reps, stats drills, blog posts explaining your projects — the blog doubles as the async writing sample remote teams screen on. Target roles honestly: ML Engineer, Applied Scientist, or MLOps as the adjacent entry.
+- **Ongoing:** conferences and communities (NeurIPS/ICML talks online, local meetups), open-source contributions, and one production model you actually own — ownership in production is the credential that outlasts every certificate.`,
   },
   {
     id: "crypto-defi-web3-careers-2026",
